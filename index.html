@@ -1,0 +1,61 @@
+import liff from "@line/liff";
+
+onMounted(async () => {
+  liff
+  .init({
+    liffId: "<LIFF ID>", // 從LIFF頁面中拿到的ID
+  })
+  .then(() => { 
+    if(liff.isLoggedIn()){
+      //做你想要做的
+      isLogin.value = liff.isLoggedIn();
+      userid.value = liff.getDecodedIDToken().sub; //這是UID
+    }
+
+  })
+  .catch((err) => {
+    console.log(err.code, err.message);
+  });
+})
+
+<form class="flex flex-col items-center" @submit.prevent="submitForm">
+<label for="name" class="block mt-4">請問您的姓名：<span class="text-red-500 text-sm">＊（請輸入文字）</span></label>
+  <input type="text" id="name" v-model="name" placeholder="姓名" class="border border-gray-300 rounded-md px-2 py-1 mt-1" pattern="[A-Za-z]+" title="請輸入有效的姓名（只能包含字母）" required />
+
+  <label for="phone" class="block mt-4">請問您的連絡電話：<span class="text-red-500 text-sm">＊（請輸入數字）</span></label>
+  <input type="text" id="phone" v-model="phone" placeholder="連絡電話" class="border border-gray-300 rounded-md px-2 py-1 mt-1" pattern="[0-9]+" title="請輸入有效的連絡電話（只能包含數字）" required />
+
+  <label for="purchaseDate" class="block mt-4">請問您的購買時間：</label>
+  <input type="date" id="purchaseDate" v-model="purchaseDate" class="border border-gray-300 rounded-md px-2 py-1 mt-1" required />
+
+  <label for="storeAddress" class="block mt-4">請問您購買的經銷門市地址：</label>
+  <select id="storeAddress" v-model="storeAddress" class="border border-gray-300 rounded-md px-2 py-1 mt-1" required>
+      <option value="">請選擇</option>
+      <option value="address1">A門市</option>
+      <option value="address2">B門市</option>
+      <option value="address3">C門市</option>
+  </select>
+</form>
+
+const submitForm = () => {
+
+    fconst formData = new FormData();
+  formData.append('name', name.value);
+  formData.append('phone', phone.value);
+  formData.append('userid', user.userid);
+
+    axios({
+            method: 'post',
+            url: '<GAS api>',
+            data: formData,
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+        .then(response => {
+            // 成功
+            console.log(response);
+        })
+        .catch(error => {
+            // 失敗
+
+        });
+}
