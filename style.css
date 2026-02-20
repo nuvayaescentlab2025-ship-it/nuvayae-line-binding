@@ -13,7 +13,7 @@ body {
 
 #app { 
     /* 透明度調至 0.7，並加上毛玻璃效果 */
-    background: rgba(255, 255, 255, 0.7); 
+    background: rgba(255, 255, 255, 0.6); 
     
     /* 縮小內距：原本 30px 改為 22px，讓框框看起來更緊湊 */
     padding: 22px; 
