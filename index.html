@@ -14,7 +14,7 @@
         .link-group a { display: block; margin: 10px 0; padding: 12px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; }
         .loading { color: #666; font-style: italic; }
     </style>
-  <script type="module" crossorigin src="./assets/index-BlxYWOYc.js"></script>
+  <script type="module" crossorigin src="./assets/index-5JZ52Bsf.js"></script>
 </head>
 <body>
     <div id="app">
@@ -22,9 +22,10 @@
 
         <div id="unboundView" class="hidden">
             <h2>訂單資訊綁定</h2>
-            <p style="font-size: 14px; color: #666;">請輸入一個月內的訂單編號以開通會員服務</p>
+            <p style="font-size: 14px; color: #666;">請輸入您的訂購資訊以開通會員</p>
             <form id="bindingForm">
-                <input type="text" id="orderId" placeholder="請輸入訂單編號" required>
+                <input type="text" id="orderId" placeholder="訂單編號 (例如：20260220xxx)" required>
+                <input type="tel" id="mobile" placeholder="訂購人手機號碼" required pattern="[0-9]{10}">
                 <button type="button" id="submitBtn">提交並綁定 LINE</button>
             </form>
         </div>
