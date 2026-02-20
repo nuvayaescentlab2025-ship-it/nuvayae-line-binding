@@ -44,7 +44,7 @@
             formData.append('email', userEmail);
         
             // 注意：這裡移除了 mode: 'no-cors'，因為我們需要讀取 GAS 回傳的 404 訊息
-            fetch('你的GAS_API網址', {
+            fetch('https://script.google.com/macros/s/AKfycby58aoJJ7ml_6Xmh_EzirrPxNnqscbMjPU24ZDc0abyrAGGXNgnFehPFaluBaHoXmgXyA/exec', {
                 method: 'POST',
                 body: formData
             })
