@@ -33,34 +33,34 @@
 
         async function submitForm() {
             const orderId = document.getElementById('orderId').value;
-            if (!orderId) { alert("請輸入訂單編號"); return; }
-
-            try {
-                // 1. 取得基本 Profile (UID, 顯示名稱, 大頭照)
-                const profile = await liff.getProfile();
-                
-                // 2. 取得 Email (選填，需在 LINE 後台申請權限並在登入時要求 scope)
-                const userEmail = liff.getDecodedIDToken() ? liff.getDecodedIDToken().email : "未授權";
-
-                const formData = new URLSearchParams();
-                formData.append('orderId', orderId);
-                formData.append('userid', profile.userId);
-                formData.append('displayName', profile.displayName);
-                formData.append('pictureUrl', profile.pictureUrl);
-                formData.append('email', userEmail);
-
-                fetch('https://script.google.com/macros/s/AKfycby58aoJJ7ml_6Xmh_EzirrPxNnqscbMjPU24ZDc0abyrAGGXNgnFehPFaluBaHoXmgXyA/exec', {
-                    method: 'POST',
-                    body: formData,
-                    mode: 'no-cors'
-                }).then(() => {
-                    alert('綁定成功！');
+            const profile = await liff.getProfile();
+            const userEmail = liff.getDecodedIDToken() ? liff.getDecodedIDToken().email : "未授權";
+        
+            const formData = new URLSearchParams();
+            formData.append('orderId', orderId);
+            formData.append('userid', profile.userId);
+            formData.append('displayName', profile.displayName);
+            formData.append('pictureUrl', profile.pictureUrl);
+            formData.append('email', userEmail);
+        
+            // 注意：這裡移除了 mode: 'no-cors'，因為我們需要讀取 GAS 回傳的 404 訊息
+            fetch('你的GAS_API網址', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === 200) {
+                    alert('✅ 綁定成功！');
                     liff.closeWindow();
-                });
-            } catch (err) {
-                console.error("抓取 Profile 失敗", err);
-                alert("無法取得 LINE 資訊，請稍後再試");
-            }
+                } else {
+                    alert('❌ 錯誤：' + result.message);
+                }
+            })
+            .catch(err => {
+                // 如果 GAS 依然有 CORS 問題，這裡會進 catch，但資料通常還是有送出
+                console.error(err);
+            });
         }
 
         document.getElementById('submitBtn').addEventListener('click', submitForm);
