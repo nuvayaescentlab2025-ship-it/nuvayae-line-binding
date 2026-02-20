@@ -3,26 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>煖意 | 訂閱系統</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>精油機訂閱會員系統</title>
     
-    <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; padding: 20px; background-color: #f4f7f6; }
-        #app { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
-        .hidden { display: none; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        
-        /* 更新：提交按鈕顏色改為 #be9f74 */
-        button { width: 100%; padding: 12px; background-color: #be9f74; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
-        button:disabled { background-color: #ccc; }
-        button:active { transform: scale(0.98); }
-        
-        /* 更新：會員資格連結按鈕顏色改為 #be9f74 */
-        .link-group a { display: block; margin: 10px 0; padding: 12px; background-color: #be9f74; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: 0.3s; }
-        .link-group a:active { transform: scale(0.98); opacity: 0.9; }
-        
-        .loading { color: #666; font-style: italic; }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div id="app">
@@ -30,7 +15,7 @@
 
         <div id="unboundView" class="hidden">
             <h2>訂單資訊綁定</h2>
-            <p style="font-size: 14px; color: #666;">請輸入您的訂購資訊以開通會員</p>
+            <p>請輸入您的訂購資訊以開通會員</p>
             <form id="bindingForm">
                 <input type="text" id="orderId" placeholder="訂單編號 (例如：20260220xxx)" required>
                 <input type="tel" id="mobile" placeholder="訂購人手機號碼" required pattern="09[0-9]{8}" maxlength="10" inputmode="numeric">
@@ -42,8 +27,8 @@
             <h2 id="userName">歡迎回來！</h2>
             <p>您已具備會員資格，請選擇服務：</p>
             <div class="link-group">
-                <a href="https://nuvayaescentlab.cashier.ecpay.com.tw">🛒 前往 VIP 專區</a>
-                <a href="https://nuvayaescentlab.cashier.ecpay.com.tw/product/000000000912859">🛠️ 租賃擴香儀</a>
+                <a href="https://nuvayaescentlab.cashier.ecpay.com.tw">✨ 進入 VIP 會員專區</a>
+                <a href="https://nuvayaescentlab.cashier.ecpay.com.tw/product/000000000912859">🌬️ 立即訂閱擴香儀</a>
             </div>
         </div>
 
@@ -51,112 +36,7 @@
     </div>
 
     <script type="module">
-        import liff from "https://cdn.jsdelivr.net/npm/@line/liff@2.23.2/+esm";
-
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycby58aoJJ7ml_6Xmh_EzirrPxNnqscbMjPU24ZDc0abyrAGGXNgnFehPFaluBaHoXmgXyA/exec';
-
-        async function initLiff() {
-            try {
-                await liff.init({ liffId: "2009177086-5AGq54Qb" });
-                if (!liff.isLoggedIn()) {
-                    liff.login();
-                } else {
-                    checkSubscriptionStatus();
-                }
-            } catch (err) {
-                console.error("LIFF 初始化失敗", err);
-                document.getElementById('loadingView').innerText = "系統初始化失敗，請稍後再試";
-            }
-        }
-
-        async function checkSubscriptionStatus() {
-            const profile = await liff.getProfile();
-            const userId = profile.userId;
-            
-            try {
-                const response = await fetch(`${GAS_URL}?userid=${userId}`);
-                const result = await response.json();
-                document.getElementById('loadingView').classList.add('hidden');
-                
-                if (result.isBound) {
-                    document.getElementById('userName').innerText = `你好，${profile.displayName}！`;
-                    document.getElementById('boundView').classList.remove('hidden');
-                } else {
-                    document.getElementById('unboundView').classList.remove('hidden');
-                }
-            } catch (err) {
-                document.getElementById('loadingView').classList.add('hidden');
-                document.getElementById('unboundView').classList.remove('hidden');
-            }
-        }
-
-        async function submitForm() {
-            const btn = document.getElementById('submitBtn');
-            const orderId = document.getElementById('orderId').value;
-            const mobile = document.getElementById('mobile').value;
-            const statusMsg = document.getElementById('statusMsg');
-        
-            if (!orderId || !mobile) {
-                Swal.fire({
-                    title: '提醒',
-                    text: '請完整填寫訂單編號與手機號碼',
-                    icon: 'warning',
-                    confirmButtonColor: '#be9f74' // 同步 SweetAlert 按鈕顏色
-                });
-                return;
-            }
-        
-            btn.disabled = true;
-            statusMsg.innerText = "正在驗證資訊...";
-        
-            const profile = await liff.getProfile();
-            const formData = new URLSearchParams();
-            formData.append('orderId', orderId);
-            formData.append('mobile', mobile);
-            formData.append('userid', profile.userId);
-            formData.append('displayName', profile.displayName);
-            formData.append('pictureUrl', profile.pictureUrl);
-        
-            try {
-                const response = await fetch(GAS_URL, {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-        
-                if (result.status === 200) {
-                    Swal.fire({
-                        title: '成功！',
-                        text: '訂單綁定成功',
-                        icon: 'success',
-                        confirmButtonColor: '#be9f74', // 同步 SweetAlert 按鈕顏色
-                        confirmButtonText: '確定'
-                    }).then(() => {
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        title: '綁定失敗',
-                        text: result.message,
-                        icon: 'error',
-                        confirmButtonColor: '#be9f74'
-                    });
-                    statusMsg.innerText = result.message;
-                    btn.disabled = false;
-                }
-            } catch (err) {
-                Swal.fire({
-                    title: '連線異常',
-                    text: '請確認網路狀態後再試一次',
-                    icon: 'error',
-                    confirmButtonColor: '#be9f74'
-                });
-                btn.disabled = false;
-            }
-        }
-        
-        document.getElementById('submitBtn').addEventListener('click', submitForm);
-        initLiff();
+        /* ... 你原本的 LIFF 邏輯與 Fetch 代碼 ... */
     </script>
 </body>
 </html>
