@@ -7,7 +7,7 @@
     
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script type="module" crossorigin src="./assets/index-BufMPBQ2.js"></script>
+  <script type="module" crossorigin src="./assets/index-BMjndqeI.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-CfBIzR7O.css">
 </head>
 <body>
@@ -15,7 +15,7 @@
         <div id="loadingView" class="loading">正在確認會員狀態...</div>
 
         <div id="unboundView" class="hidden">
-            <h2>訂單資訊綁定</h2>
+            <h2 style="color: #be9f74;">訂單資訊綁定</h2>
             <p>請輸入您的訂購資訊以開通會員</p>
             <form id="bindingForm">
                 <input type="text" id="orderId" placeholder="訂單編號 (例如：20260220xxx)" required>
@@ -25,7 +25,7 @@
         </div>
 
         <div id="boundView" class="hidden">
-            <h2 id="userName">歡迎回來！</h2>
+            <h2 id="userName" style="color: #be9f74;">歡迎回來！</h2>
             <p>您已具備會員資格，請選擇服務：</p>
             <div class="link-group">
                 <a href="https://nuvayaescentlab.cashier.ecpay.com.tw">✨ 進入 VIP 會員專區</a>
@@ -33,7 +33,7 @@
             </div>
         </div>
 
-        <p id="statusMsg" style="margin-top: 15px; font-size: 14px;"></p>
+        <p id="statusMsg" style="margin-top: 15px; font-size: 14px; color: #888;"></p>
     </div>
 
 </body>
