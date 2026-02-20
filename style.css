@@ -12,14 +12,24 @@ body {
 }
 
 #app { 
-    background: rgba(255, 255, 255, 0.9); 
-    padding: 30px; 
-    border-radius: 20px; 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+    /* 透明度調至 0.7，並加上毛玻璃效果 */
+    background: rgba(255, 255, 255, 0.7); 
+    
+    /* 縮小內距：原本 30px 改為 22px，讓框框看起來更緊湊 */
+    padding: 22px; 
+    
+    /* 圓角稍微調小一點點，更俐落 */
+    border-radius: 16px; 
+    
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+    
+    /* 縮小寬度：原本 85% 改為 80%，讓左右留白多一點 */
     width: 80%; 
-    max-width: 360px; 
+    max-width: 320px; /* 最大寬度從 360px 下修到 320px */
+    
     text-align: center;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px);
 }
 
 h2 { color: #5d4a3e; margin-top: 0; }
