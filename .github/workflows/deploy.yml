@@ -1,0 +1,28 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main  # 將此處更改為你的默認分支名稱，例如：master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Install & Build # 執行指令
+      run: |
+        npm install
+        npm run build 
+
+    - name: Deploy
+      uses: JamesIves/github-pages-deploy-action@4.1.5
+      with:
+        branch: gh-pages  # GitHub Pages 的分支
+        folder: dist  # build 後的檔案夾
+
+    - name: Debug git error
+      run: git status
