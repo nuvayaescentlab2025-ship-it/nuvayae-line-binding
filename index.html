@@ -3,27 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>煖意 | 訂閱系統</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>精油機訂閱會員系統</title>
     
-    <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; padding: 20px; background-color: #f4f7f6; }
-        #app { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
-        .hidden { display: none; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        
-        /* 更新：提交按鈕顏色改為 #be9f74 */
-        button { width: 100%; padding: 12px; background-color: #be9f74; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
-        button:disabled { background-color: #ccc; }
-        button:active { transform: scale(0.98); }
-        
-        /* 更新：會員資格連結按鈕顏色改為 #be9f74 */
-        .link-group a { display: block; margin: 10px 0; padding: 12px; background-color: #be9f74; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: 0.3s; }
-        .link-group a:active { transform: scale(0.98); opacity: 0.9; }
-        
-        .loading { color: #666; font-style: italic; }
-    </style>
-  <script type="module" crossorigin src="./assets/index-Cwy_Q0xp.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script type="module" crossorigin src="./assets/index-mhf8QfTh.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DFGUAA0H.css">
 </head>
 <body>
     <div id="app">
@@ -31,7 +16,7 @@
 
         <div id="unboundView" class="hidden">
             <h2>訂單資訊綁定</h2>
-            <p style="font-size: 14px; color: #666;">請輸入您的訂購資訊以開通會員</p>
+            <p>請輸入您的訂購資訊以開通會員</p>
             <form id="bindingForm">
                 <input type="text" id="orderId" placeholder="訂單編號 (例如：20260220xxx)" required>
                 <input type="tel" id="mobile" placeholder="訂購人手機號碼" required pattern="09[0-9]{8}" maxlength="10" inputmode="numeric">
@@ -43,8 +28,8 @@
             <h2 id="userName">歡迎回來！</h2>
             <p>您已具備會員資格，請選擇服務：</p>
             <div class="link-group">
-                <a href="https://nuvayaescentlab.cashier.ecpay.com.tw">🛒 前往 VIP 專區</a>
-                <a href="https://nuvayaescentlab.cashier.ecpay.com.tw/product/000000000912859">🛠️ 租賃擴香儀</a>
+                <a href="https://nuvayaescentlab.cashier.ecpay.com.tw">✨ 進入 VIP 會員專區</a>
+                <a href="https://nuvayaescentlab.cashier.ecpay.com.tw/product/000000000912859">🌬️ 立即訂閱擴香儀</a>
             </div>
         </div>
 
