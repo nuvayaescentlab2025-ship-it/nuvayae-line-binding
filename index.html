@@ -4,17 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>精油機訂閱會員系統</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
         body { font-family: sans-serif; display: flex; justify-content: center; padding: 20px; background-color: #f4f7f6; }
         #app { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
         .hidden { display: none; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #00b900; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 12px; background-color: #00b900; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
         button:disabled { background-color: #ccc; }
-        .link-group a { display: block; margin: 10px 0; padding: 12px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; }
+        button:active { transform: scale(0.98); }
+        .link-group a { display: block; margin: 10px 0; padding: 12px; background-color: #007bff; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; }
         .loading { color: #666; font-style: italic; }
     </style>
-  <script type="module" crossorigin src="./assets/index-5JZ52Bsf.js"></script>
+  <script type="module" crossorigin src="./assets/index-Cd0iIZOk.js"></script>
 </head>
 <body>
     <div id="app">
@@ -25,7 +28,7 @@
             <p style="font-size: 14px; color: #666;">請輸入您的訂購資訊以開通會員</p>
             <form id="bindingForm">
                 <input type="text" id="orderId" placeholder="訂單編號 (例如：20260220xxx)" required>
-                <input type="tel" id="mobile" placeholder="訂購人手機號碼" required pattern="[0-9]{10}">
+                <input type="tel" id="mobile" placeholder="訂購人手機號碼" required pattern="09[0-9]{8}" maxlength="10" inputmode="numeric">
                 <button type="button" id="submitBtn">提交並綁定 LINE</button>
             </form>
         </div>
