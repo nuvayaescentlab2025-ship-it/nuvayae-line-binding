@@ -14,7 +14,7 @@
         <div id="loadingView" class="loading">正在確認會員狀態...</div>
 
         <div id="unboundView" class="hidden">
-            <h2>訂單資訊綁定</h2>
+            <h2 style="color: #be9f74;">訂單資訊綁定</h2>
             <p>請輸入您的訂購資訊以開通會員</p>
             <form id="bindingForm">
                 <input type="text" id="orderId" placeholder="訂單編號 (例如：20260220xxx)" required>
@@ -24,7 +24,7 @@
         </div>
 
         <div id="boundView" class="hidden">
-            <h2 id="userName">歡迎回來！</h2>
+            <h2 id="userName" style="color: #be9f74;">歡迎回來！</h2>
             <p>您已具備會員資格，請選擇服務：</p>
             <div class="link-group">
                 <a href="https://nuvayaescentlab.cashier.ecpay.com.tw">✨ 進入 VIP 會員專區</a>
@@ -32,11 +32,109 @@
             </div>
         </div>
 
-        <p id="statusMsg" style="margin-top: 15px; font-size: 14px;"></p>
+        <p id="statusMsg" style="margin-top: 15px; font-size: 14px; color: #888;"></p>
     </div>
 
     <script type="module">
-        /* ... 你原本的 LIFF 邏輯與 Fetch 代碼 ... */
+        import liff from "https://cdn.jsdelivr.net/npm/@line/liff@2.23.2/+esm";
+
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycby58aoJJ7ml_6Xmh_EzirrPxNnqscbMjPU24ZDc0abyrAGGXNgnFehPFaluBaHoXmgXyA/exec';
+
+        async function initLiff() {
+            try {
+                await liff.init({ liffId: "2009177086-5AGq54Qb" });
+                if (!liff.isLoggedIn()) {
+                    liff.login();
+                } else {
+                    // 重要：登入後執行狀態檢查
+                    checkSubscriptionStatus();
+                }
+            } catch (err) {
+                console.error("LIFF 初始化失敗", err);
+                document.getElementById('loadingView').innerText = "系統初始化失敗，請稍後再試";
+            }
+        }
+
+        // 1. 檢查訂閱狀態 (doGet)
+        async function checkSubscriptionStatus() {
+            try {
+                const profile = await liff.getProfile();
+                const userId = profile.userId;
+                
+                // 這裡發送 GET 請求給 GAS
+                const response = await fetch(`${GAS_URL}?userid=${userId}`);
+                const result = await response.json();
+
+                // 隱藏載入中文字
+                document.getElementById('loadingView').classList.add('hidden');
+                
+                if (result.isBound) {
+                    // 顯示已綁定畫面
+                    document.getElementById('userName').innerText = `你好，${profile.displayName}！`;
+                    document.getElementById('boundView').classList.remove('hidden');
+                } else {
+                    // 顯示未綁定畫面
+                    document.getElementById('unboundView').classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error("檢查狀態失敗", err);
+                document.getElementById('loadingView').classList.add('hidden');
+                document.getElementById('unboundView').classList.remove('hidden');
+            }
+        }
+
+        // 2. 提交綁定 (doPost)
+        async function submitForm() {
+            const btn = document.getElementById('submitBtn');
+            const orderId = document.getElementById('orderId').value;
+            const mobile = document.getElementById('mobile').value;
+            const statusMsg = document.getElementById('statusMsg');
+
+            if (!orderId || !mobile) {
+                Swal.fire('提醒', '請填寫訂單編號與手機號碼', 'warning');
+                return;
+            }
+
+            btn.disabled = true;
+            statusMsg.innerText = "正在驗證資訊...";
+
+            const profile = await liff.getProfile();
+            const formData = new URLSearchParams();
+            formData.append('orderId', orderId);
+            formData.append('mobile', mobile);
+            formData.append('userid', profile.userId);
+            formData.append('displayName', profile.displayName);
+            formData.append('pictureUrl', profile.pictureUrl);
+
+            try {
+                const response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+
+                if (result.status === 200) {
+                    Swal.fire({
+                        title: '成功！',
+                        text: '訂單綁定成功',
+                        icon: 'success',
+                        confirmButtonColor: '#be9f74'
+                    }).then(() => {
+                        location.reload(); // 重新整理，重新跑一次 checkSubscriptionStatus
+                    });
+                } else {
+                    Swal.fire('綁定失敗', result.message, 'error');
+                    statusMsg.innerText = result.message;
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                Swal.fire('連線異常', '請稍後再試', 'error');
+                btn.disabled = false;
+            }
+        }
+
+        document.getElementById('submitBtn').addEventListener('click', submitForm);
+        initLiff();
     </script>
 </body>
 </html>
