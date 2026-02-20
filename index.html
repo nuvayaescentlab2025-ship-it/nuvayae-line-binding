@@ -1,61 +1,69 @@
-import liff from "@line/liff";
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuvayae LIFF 問卷</title>
+</head>
+<body>
+    <div id="app">
+        <form id="bindingForm">
+            <label>請問您的姓名：</label><br>
+            <input type="text" id="name" required><br><br>
 
-onMounted(async () => {
-  liff
-  .init({
-    liffId: "<LIFF ID>", // 從LIFF頁面中拿到的ID
-  })
-  .then(() => { 
-    if(liff.isLoggedIn()){
-      //做你想要做的
-      isLogin.value = liff.isLoggedIn();
-      userid.value = liff.getDecodedIDToken().sub; //這是UID
-    }
+            <label>請問您的連絡電話：</label><br>
+            <input type="text" id="phone" required><br><br>
 
-  })
-  .catch((err) => {
-    console.log(err.code, err.message);
-  });
-})
+            <label>門市地址：</label><br>
+            <select id="store">
+                <option value="A">A門市</option>
+                <option value="B">B門市</option>
+            </select><br><br>
 
-<form class="flex flex-col items-center" @submit.prevent="submitForm">
-<label for="name" class="block mt-4">請問您的姓名：<span class="text-red-500 text-sm">＊（請輸入文字）</span></label>
-  <input type="text" id="name" v-model="name" placeholder="姓名" class="border border-gray-300 rounded-md px-2 py-1 mt-1" pattern="[A-Za-z]+" title="請輸入有效的姓名（只能包含字母）" required />
+            <button type="button" id="submitBtn">送出表單</button>
+        </form>
+        <p id="status"></p>
+    </div>
 
-  <label for="phone" class="block mt-4">請問您的連絡電話：<span class="text-red-500 text-sm">＊（請輸入數字）</span></label>
-  <input type="text" id="phone" v-model="phone" placeholder="連絡電話" class="border border-gray-300 rounded-md px-2 py-1 mt-1" pattern="[0-9]+" title="請輸入有效的連絡電話（只能包含數字）" required />
+    <script type="module">
+        import liff from "@line/liff";
 
-  <label for="purchaseDate" class="block mt-4">請問您的購買時間：</label>
-  <input type="date" id="purchaseDate" v-model="purchaseDate" class="border border-gray-300 rounded-md px-2 py-1 mt-1" required />
+        // 初始化 LIFF
+        async function initLiff() {
+            try {
+                await liff.init({ liffId: "你的LIFF_ID_填在這裡" });
+                if (!liff.isLoggedIn()) {
+                    liff.login();
+                } else {
+                    console.log("LIFF 已啟動");
+                }
+            } catch (err) {
+                console.error("LIFF 初始化失敗", err);
+            }
+        }
 
-  <label for="storeAddress" class="block mt-4">請問您購買的經銷門市地址：</label>
-  <select id="storeAddress" v-model="storeAddress" class="border border-gray-300 rounded-md px-2 py-1 mt-1" required>
-      <option value="">請選擇</option>
-      <option value="address1">A門市</option>
-      <option value="address2">B門市</option>
-      <option value="address3">C門市</option>
-  </select>
-</form>
+        // 送出表單到 GAS
+        async function submitForm() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const profile = await liff.getProfile(); // 取得 UID
 
-const submitForm = () => {
+            const formData = new URLSearchParams();
+            formData.append('name', name);
+            formData.append('phone', phone);
+            formData.append('userid', profile.userId);
 
-    fconst formData = new FormData();
-  formData.append('name', name.value);
-  formData.append('phone', phone.value);
-  formData.append('userid', user.userid);
+            fetch('你的GAS_API網址_填在這裡', {
+                method: 'POST',
+                body: formData,
+                mode: 'no-cors' // 避免跨網域錯誤
+            }).then(() => {
+                alert('資料已送出！');
+            }).catch(err => console.error(err));
+        }
 
-    axios({
-            method: 'post',
-            url: '<GAS api>',
-            data: formData,
-            headers: { 'Content-Type': 'multipart/form-data' }
-        })
-        .then(response => {
-            // 成功
-            console.log(response);
-        })
-        .catch(error => {
-            // 失敗
-
-        });
-}
+        document.getElementById('submitBtn').addEventListener('click', submitForm);
+        initLiff();
+    </script>
+</body>
+</html>
