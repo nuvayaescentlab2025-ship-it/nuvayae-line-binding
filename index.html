@@ -3,25 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nuvayae LIFF 問卷</title>
-  <script type="module" crossorigin src="./assets/index-Dm88K_Py.js"></script>
+    <title>訂單綁定系統</title>
+  <script type="module" crossorigin src="./assets/index-D-VJHmqU.js"></script>
 </head>
 <body>
     <div id="app">
+        <h2>訂單資訊綁定</h2>
         <form id="bindingForm">
-            <label>請問您的姓名：</label><br>
-            <input type="text" id="name" required><br><br>
-
-            <label>請問您的連絡電話：</label><br>
-            <input type="text" id="phone" required><br><br>
-
-            <label>門市地址：</label><br>
-            <select id="store">
-                <option value="A">A門市</option>
-                <option value="B">B門市</option>
-            </select><br><br>
-
-            <button type="button" id="submitBtn">送出表單</button>
+            <label>請輸入您的訂單編號：</label><br>
+            <input type="text" id="orderId" placeholder="例如：20260220001" required><br><br>
+            <button type="button" id="submitBtn">提交並綁定 LINE</button>
         </form>
         <p id="status"></p>
     </div>
