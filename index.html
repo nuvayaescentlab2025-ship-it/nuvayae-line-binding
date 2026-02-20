@@ -3,24 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nuvayae LIFF 問卷</title>
+    <title>訂單綁定系統</title>
 </head>
 <body>
     <div id="app">
+        <h2>訂單資訊綁定</h2>
         <form id="bindingForm">
-            <label>請問您的姓名：</label><br>
-            <input type="text" id="name" required><br><br>
-
-            <label>請問您的連絡電話：</label><br>
-            <input type="text" id="phone" required><br><br>
-
-            <label>門市地址：</label><br>
-            <select id="store">
-                <option value="A">A門市</option>
-                <option value="B">B門市</option>
-            </select><br><br>
-
-            <button type="button" id="submitBtn">送出表單</button>
+            <label>請輸入您的訂單編號：</label><br>
+            <input type="text" id="orderId" placeholder="例如：20260220001" required><br><br>
+            <button type="button" id="submitBtn">提交並綁定 LINE</button>
         </form>
         <p id="status"></p>
     </div>
@@ -28,38 +19,48 @@
     <script type="module">
         import liff from "@line/liff";
 
-        // 初始化 LIFF
         async function initLiff() {
             try {
+                // 初始化並要求 Email 權限 (需在 LINE 後台開啟權限)
                 await liff.init({ liffId: "2009177086-5AGq54Qb" });
                 if (!liff.isLoggedIn()) {
                     liff.login();
-                } else {
-                    console.log("LIFF 已啟動");
                 }
             } catch (err) {
                 console.error("LIFF 初始化失敗", err);
             }
         }
 
-        // 送出表單到 GAS
         async function submitForm() {
-            const name = document.getElementById('name').value;
-            const phone = document.getElementById('phone').value;
-            const profile = await liff.getProfile(); // 取得 UID
+            const orderId = document.getElementById('orderId').value;
+            if (!orderId) { alert("請輸入訂單編號"); return; }
 
-            const formData = new URLSearchParams();
-            formData.append('name', name);
-            formData.append('phone', phone);
-            formData.append('userid', profile.userId);
+            try {
+                // 1. 取得基本 Profile (UID, 顯示名稱, 大頭照)
+                const profile = await liff.getProfile();
+                
+                // 2. 取得 Email (選填，需在 LINE 後台申請權限並在登入時要求 scope)
+                const userEmail = liff.getDecodedIDToken() ? liff.getDecodedIDToken().email : "未授權";
 
-            fetch('https://script.google.com/macros/s/AKfycby58aoJJ7ml_6Xmh_EzirrPxNnqscbMjPU24ZDc0abyrAGGXNgnFehPFaluBaHoXmgXyA/exec', {
-                method: 'POST',
-                body: formData,
-                mode: 'no-cors' // 避免跨網域錯誤
-            }).then(() => {
-                alert('資料已送出！');
-            }).catch(err => console.error(err));
+                const formData = new URLSearchParams();
+                formData.append('orderId', orderId);
+                formData.append('userid', profile.userId);
+                formData.append('displayName', profile.displayName);
+                formData.append('pictureUrl', profile.pictureUrl);
+                formData.append('email', userEmail);
+
+                fetch('你的GAS_API網址', {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors'
+                }).then(() => {
+                    alert('綁定成功！');
+                    liff.closeWindow();
+                });
+            } catch (err) {
+                console.error("抓取 Profile 失敗", err);
+                alert("無法取得 LINE 資訊，請稍後再試");
+            }
         }
 
         document.getElementById('submitBtn').addEventListener('click', submitForm);
