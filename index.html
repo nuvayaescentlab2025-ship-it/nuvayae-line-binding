@@ -21,9 +21,10 @@
 
         <div id="unboundView" class="hidden">
             <h2>訂單資訊綁定</h2>
-            <p style="font-size: 14px; color: #666;">請輸入一個月內的訂單編號以開通會員服務</p>
+            <p style="font-size: 14px; color: #666;">請輸入您的訂購資訊以開通會員</p>
             <form id="bindingForm">
-                <input type="text" id="orderId" placeholder="請輸入訂單編號" required>
+                <input type="text" id="orderId" placeholder="訂單編號 (例如：20260220xxx)" required>
+                <input type="tel" id="mobile" placeholder="訂購人手機號碼" required pattern="[0-9]{10}">
                 <button type="button" id="submitBtn">提交並綁定 LINE</button>
             </form>
         </div>
@@ -90,22 +91,21 @@
         async function submitForm() {
             const btn = document.getElementById('submitBtn');
             const orderId = document.getElementById('orderId').value;
+            const mobile = document.getElementById('mobile').value; // 取得手機號碼
             const statusMsg = document.getElementById('statusMsg');
-
-            if (!orderId) return alert('請輸入訂單編號');
-
-            btn.disabled = true;
-            statusMsg.innerText = "正在驗證訂單...";
-
-            const profile = await liff.getProfile();
-            const userEmail = liff.getDecodedIDToken() ? liff.getDecodedIDToken().email : "未授權";
         
+            if (!orderId || !mobile) return alert('請完整填寫訂單編號與手機號碼');
+        
+            btn.disabled = true;
+            statusMsg.innerText = "正在驗證資訊...";
+        
+            const profile = await liff.getProfile();
             const formData = new URLSearchParams();
             formData.append('orderId', orderId);
+            formData.append('mobile', mobile); // 加入手機號碼
             formData.append('userid', profile.userId);
             formData.append('displayName', profile.displayName);
             formData.append('pictureUrl', profile.pictureUrl);
-            formData.append('email', userEmail);
         
             try {
                 const response = await fetch(GAS_URL, {
@@ -113,23 +113,22 @@
                     body: formData
                 });
                 const result = await response.json();
-
+        
                 if (result.status === 200) {
                     alert('✅ 綁定成功！');
-                    location.reload(); // 重新載入頁面以切換至功能選單視圖
+                    location.reload();
                 } else {
                     alert('❌ 錯誤：' + result.message);
                     statusMsg.innerText = result.message;
                     btn.disabled = false;
                 }
             } catch (err) {
-                console.error(err);
-                alert('系統連線異常，請稍後再試');
+                alert('連線異常，請稍後再試');
                 btn.disabled = false;
             }
         }
-
-        document.getElementById('submitBtn').addEventListener('click', submitForm);
+        
+                document.getElementById('submitBtn').addEventListener('click', submitForm);
         initLiff();
     </script>
 </body>
