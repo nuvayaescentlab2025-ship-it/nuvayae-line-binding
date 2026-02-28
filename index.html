@@ -83,37 +83,35 @@
                 const response = await fetch(`${GAS_URL}?userid=${userId}`);
                 const result = await response.json();
 
-                // 隱藏載入中文字
-                document.getElementById('loadingView').classList.add('hidden');
-                
                 if (result.isBound) {
-                    // 顯示已綁定畫面
+                    // 查詢訂閱時長，等待完成後再顯示
+                    try {
+                        const dr = await fetch(`${DURATION_URL}?uid=${userId}`);
+                        const d = await dr.json();
+                        if (d.status === 'success') {
+                            document.getElementById('subscriptionDuration').innerText = `訂閱 ${d.duration}`;
+                            const months = d.months;
+                            const total = 12;
+                            const remaining = total - months;
+                            document.getElementById('currentMonth').textContent = months;
+                            document.getElementById('remainingMonths').textContent = remaining;
+                            document.getElementById('progressFill').style.width =
+                                `${(months / total) * 100}%`;
+                            document.querySelector('.progress-card').classList.remove('hidden');
+                        } else {
+                            document.getElementById('subscriptionDuration').innerText = '查詢異常，請洽詢官方LINE帳號';
+                        }
+                    } catch {
+                        document.getElementById('subscriptionDuration').innerText = '查詢異常，請洽詢官方LINE帳號';
+                    }
+
+                    // 兩個查詢都完成，隱藏載入並顯示已綁定畫面
+                    document.getElementById('loadingView').classList.add('hidden');
                     document.getElementById('userName').innerText = `你好，${profile.displayName}！`;
                     document.getElementById('boundView').classList.remove('hidden');
-                    // 查詢訂閱時長
-                    fetch(`${DURATION_URL}?uid=${userId}`)
-                        .then(r => r.json())
-                        .then(d => {
-                            if (d.status === 'success') {
-                                document.getElementById('subscriptionDuration').innerText = `訂閱 ${d.duration}`;
-
-                                // 動態設定進度卡片
-                                const months = d.months;
-                                const total = 12;
-                                const remaining = total - months;
-                                document.getElementById('currentMonth').textContent = months;
-                                document.getElementById('remainingMonths').textContent = remaining;
-                                document.getElementById('progressFill').style.width =
-                                    `${(months / total) * 100}%`;
-                                document.querySelector('.progress-card').classList.remove('hidden');
-                            } else {
-                                document.getElementById('subscriptionDuration').innerText = '查詢異常，請洽詢官方LINE帳號';
-                            }
-                        })
-                        .catch(() => {
-                            document.getElementById('subscriptionDuration').innerText = '查詢異常，請洽詢官方LINE帳號';
-                        });
                 } else {
+                    // 隱藏載入中文字
+                    document.getElementById('loadingView').classList.add('hidden');
                     // 顯示未綁定畫面
                     document.getElementById('unboundView').classList.remove('hidden');
                 }
