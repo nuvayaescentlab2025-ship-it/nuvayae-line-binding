@@ -105,9 +105,13 @@
                                 document.getElementById('remainingMonths').textContent = remaining;
                                 document.getElementById('progressFill').style.width =
                                     `${(months / total) * 100}%`;
+                            } else {
+                                document.getElementById('subscriptionDuration').innerText = '查詢異常，請洽詢官方LINE帳號';
                             }
                         })
-                        .catch(() => {});
+                        .catch(() => {
+                            document.getElementById('subscriptionDuration').innerText = '查詢異常，請洽詢官方LINE帳號';
+                        });
                 } else {
                     // 顯示未綁定畫面
                     document.getElementById('unboundView').classList.remove('hidden');
