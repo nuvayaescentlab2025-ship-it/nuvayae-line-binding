@@ -25,6 +25,7 @@
 
         <div id="boundView" class="hidden">
             <h2 id="userName" style="color: #be9f74;">歡迎回來！</h2>
+            <p id="subscriptionDuration" style="font-size: 13px; color: #aaa;"></p>
             <p>您已具備會員資格，請選擇服務：</p>
             <div class="link-group">
                 <a href="https://nuvayaescentlab.cashier.ecpay.com.tw">✨ 進入 VIP 會員專區</a>
@@ -39,6 +40,7 @@
         import liff from "https://cdn.jsdelivr.net/npm/@line/liff@2.23.2/+esm";
 
         const GAS_URL = 'https://script.google.com/macros/s/AKfycby58aoJJ7ml_6Xmh_EzirrPxNnqscbMjPU24ZDc0abyrAGGXNgnFehPFaluBaHoXmgXyA/exec';
+        const DURATION_URL = 'https://script.google.com/macros/s/AKfycbyztna3JATsl16tEPwFKIJgZm1GGsFAGS0bI-pAvFdPjnaTuTzNnSqHK8QPHL7Xyz8e/exec';
 
         async function initLiff() {
             try {
@@ -72,6 +74,15 @@
                     // 顯示已綁定畫面
                     document.getElementById('userName').innerText = `你好，${profile.displayName}！`;
                     document.getElementById('boundView').classList.remove('hidden');
+                    // 查詢訂閱時長
+                    fetch(`${DURATION_URL}?uid=${userId}`)
+                        .then(r => r.json())
+                        .then(d => {
+                            if (d.status === 'success') {
+                                document.getElementById('subscriptionDuration').innerText = `訂閱 ${d.duration}`;
+                            }
+                        })
+                        .catch(() => {});
                 } else {
                     // 顯示未綁定畫面
                     document.getElementById('unboundView').classList.remove('hidden');
