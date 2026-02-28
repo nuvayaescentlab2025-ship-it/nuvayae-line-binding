@@ -55,8 +55,7 @@
     <script type="module">
         import liff from "https://cdn.jsdelivr.net/npm/@line/liff@2.23.2/+esm";
 
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycby58aoJJ7ml_6Xmh_EzirrPxNnqscbMjPU24ZDc0abyrAGGXNgnFehPFaluBaHoXmgXyA/exec';
-        const DURATION_URL = 'https://script.google.com/macros/s/AKfycbyztna3JATsl16tEPwFKIJgZm1GGsFAGS0bI-pAvFdPjnaTuTzNnSqHK8QPHL7Xyz8e/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycby58aoJJ7ml_6Xmh_EzirrPxNnqscbMjPU24ZDc0abyrAGGXNgnFehPFaluBaHoXmgXyA/exec';
 
         async function initLiff() {
             try {
@@ -80,32 +79,19 @@
                 const userId = profile.userId;
                 
                 // 這裡發送 GET 請求給 GAS
-                const response = await fetch(`${GAS_URL}?userid=${userId}`);
+                const response = await fetch(`${API_URL}?userid=${userId}`);
                 const result = await response.json();
 
                 if (result.isBound) {
-                    // 查詢訂閱時長，等待完成後再顯示
-                    try {
-                        const dr = await fetch(`${DURATION_URL}?uid=${userId}`);
-                        const d = await dr.json();
-                        if (d.status === 'success') {
-                            document.getElementById('subscriptionDuration').innerText = `訂閱 ${d.duration}`;
-                            const months = d.months;
-                            const total = 12;
-                            const remaining = total - months;
-                            document.getElementById('currentMonth').textContent = months;
-                            document.getElementById('remainingMonths').textContent = remaining;
-                            document.getElementById('progressFill').style.width =
-                                `${(months / total) * 100}%`;
-                            document.querySelector('.progress-card').classList.remove('hidden');
-                        } else {
-                            document.getElementById('subscriptionDuration').innerText = '查詢異常，請洽詢官方LINE帳號';
-                        }
-                    } catch {
-                        document.getElementById('subscriptionDuration').innerText = '查詢異常，請洽詢官方LINE帳號';
-                    }
+                    document.getElementById('subscriptionDuration').innerText = `訂閱 ${result.duration}`;
+                    const months = result.months;
+                    const total = 12;
+                    const remaining = total - months;
+                    document.getElementById('currentMonth').textContent = months;
+                    document.getElementById('remainingMonths').textContent = remaining;
+                    document.getElementById('progressFill').style.width = `${(months / total) * 100}%`;
+                    document.querySelector('.progress-card').classList.remove('hidden');
 
-                    // 兩個查詢都完成，隱藏載入並顯示已綁定畫面
                     document.getElementById('loadingView').classList.add('hidden');
                     document.getElementById('userName').innerText = `你好，${profile.displayName}！`;
                     document.getElementById('boundView').classList.remove('hidden');
@@ -146,7 +132,7 @@
             formData.append('pictureUrl', profile.pictureUrl);
 
             try {
-                const response = await fetch(GAS_URL, {
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     body: formData
                 });
