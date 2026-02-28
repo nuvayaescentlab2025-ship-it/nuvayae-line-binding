@@ -26,7 +26,7 @@
         <div id="boundView" class="hidden">
             <h2 id="userName" style="color: #be9f74;">歡迎回來！</h2>
             <p id="subscriptionDuration" style="font-size: 13px; color: #aaa;"></p>
-            <div class="progress-card">
+            <div class="progress-card hidden">
               <div class="progress-header">
                 <span class="progress-fraction">
                   <span id="currentMonth">查詢中</span><span class="slash">/</span><span>12</span>
@@ -105,6 +105,7 @@
                                 document.getElementById('remainingMonths').textContent = remaining;
                                 document.getElementById('progressFill').style.width =
                                     `${(months / total) * 100}%`;
+                                document.querySelector('.progress-card').classList.remove('hidden');
                             } else {
                                 document.getElementById('subscriptionDuration').innerText = '查詢異常，請洽詢官方LINE帳號';
                             }
