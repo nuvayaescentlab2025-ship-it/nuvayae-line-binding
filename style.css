@@ -67,6 +67,11 @@ button:active { transform: scale(0.96); opacity: 0.9; }
 
 .loading { color: #be9f74; font-weight: bold; font-style: italic; }
 
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
 .progress-card {
     background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(245,235,215,0.4));
     border: 1px solid rgba(190,159,116,0.35);
@@ -75,6 +80,10 @@ button:active { transform: scale(0.96); opacity: 0.9; }
     margin: 14px 0 16px;
     text-align: left;
     position: relative;
+}
+
+.progress-card:not(.hidden) {
+    animation: fadeSlideIn 0.45s ease-out;
 }
 
 /* 分數大字 */
