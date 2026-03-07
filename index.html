@@ -177,6 +177,55 @@
         from { opacity: 0; transform: translateX(-50%) translateY(6px); }
         to   { opacity: 1; transform: translateX(-50%) translateY(0); }
       }
+
+      /* ── 選香區塊 ── */
+      #scentPicker { margin-top: 28px; width: 100%; }
+
+      .scent-section-label {
+        font-size: 9px; letter-spacing: 0.35em; text-transform: uppercase;
+        color: #7a6b58; text-align: center; margin-bottom: 16px;
+      }
+
+      .scent-cards {
+        display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+      }
+
+      .scent-card {
+        flex: 1 1 90px; max-width: 120px;
+        display: flex; flex-direction: column; align-items: center; gap: 8px;
+        background: rgba(30,22,14,0.55);
+        border: 1px solid rgba(190,159,116,0.18);
+        border-radius: 2px; padding: 10px 8px 12px;
+        transition: border-color 0.3s, transform 0.3s;
+        text-decoration: none;
+      }
+      .scent-card:hover {
+        border-color: rgba(201,169,110,0.55);
+        transform: translateY(-3px);
+      }
+
+      .scent-card img {
+        width: 100%; aspect-ratio: 1/1; object-fit: cover;
+        border-radius: 1px; display: block;
+      }
+
+      .scent-card-name {
+        font-size: 10px; letter-spacing: 0.08em; color: #c9a96e;
+        text-align: center; line-height: 1.5;
+      }
+      .scent-card-name span {
+        display: block; font-size: 8px; letter-spacing: 0.12em;
+        color: #7a6b58; margin-top: 2px;
+      }
+
+      .scent-card-btn {
+        font-size: 8px; letter-spacing: 0.15em; color: #a07840;
+        border: 1px solid rgba(190,159,116,0.35); padding: 3px 8px;
+        border-radius: 1px;
+      }
+      .scent-card:hover .scent-card-btn {
+        color: #c9a96e; border-color: rgba(201,169,110,0.6);
+      }
     </style>
   <script type="module" crossorigin src="./assets/index-CrEU3Aa1.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-DtRnUWlO.css">
@@ -221,6 +270,27 @@
                 </div>
                 <div class="cal-legend">
                     <div class="cal-legend-item"><div class="cal-legend-dot seasonal"></div>季禮月</div>
+                </div>
+            </div>
+
+            <div id="scentPicker">
+                <div class="scent-section-label">本月選香</div>
+                <div class="scent-cards">
+                    <a class="scent-card" href="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000914690" target="_blank">
+                        <img src="https://img.cashier.ecpay.com.tw/image/resize/p600x600/2026/03/6/617787_fd35d7bcc8b6f82a729aa4a46300c1e5dc4faaf6.png" alt="夜和">
+                        <div class="scent-card-name">夜和<span>Oboro Night</span></div>
+                        <div class="scent-card-btn">前往選購</div>
+                    </a>
+                    <a class="scent-card" href="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000920061" target="_blank">
+                        <img src="https://img.cashier.ecpay.com.tw/image/resize/p600x600/2026/03/6/617787_e1f675909dedac45a70ef61b3f96cc69407fe325.png" alt="暖居">
+                        <div class="scent-card-name">暖居<span>Komorebi Haven</span></div>
+                        <div class="scent-card-btn">前往選購</div>
+                    </a>
+                    <a class="scent-card" href="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000920152" target="_blank">
+                        <img src="https://img.cashier.ecpay.com.tw/image/resize/p600x600/2026/03/6/617787_8cd2d5cc94d936982f94882db0a9805c338131ba.png" alt="朝光">
+                        <div class="scent-card-name">朝光<span>Sumi Dawn</span></div>
+                        <div class="scent-card-btn">前往選購</div>
+                    </a>
                 </div>
             </div>
 
