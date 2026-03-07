@@ -107,7 +107,7 @@
       .cal-month-node:hover .cal-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
 
       .cal-month-node.start-month .cal-month-dot {
-        border-color: #c9a96e;
+        background: rgba(45,35,24,0.95); border-color: rgba(45,35,24,0.95);
       }
       .cal-month-node.start-month .cal-month-dot::before {
         content: ''; position: absolute; inset: -5px; border-radius: 50%;
@@ -187,45 +187,76 @@
         color: #7a6b58; text-align: center; margin-bottom: 16px;
       }
 
-      .scent-cards {
-        display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+      /* carousel */
+      .scent-carousel {
+        display: flex; align-items: center; gap: 6px;
+      }
+      .scent-viewport {
+        flex: 1; overflow: hidden;
+      }
+      .scent-track {
+        display: flex;
+        transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+        will-change: transform;
       }
 
       .scent-card {
-        flex: 1 1 90px; max-width: 120px;
-        display: flex; flex-direction: column; align-items: center; gap: 8px;
-        background: rgba(30,22,14,0.55);
+        flex: 0 0 100%;
+        display: flex; flex-direction: column; align-items: center; gap: 10px;
+        background: rgba(45,30,8,0.62);
         border: 1px solid rgba(190,159,116,0.18);
-        border-radius: 2px; padding: 10px 8px 12px;
-        transition: border-color 0.3s, transform 0.3s;
+        border-radius: 2px; padding: 14px 16px 16px;
         text-decoration: none;
+        box-sizing: border-box;
       }
       .scent-card:hover {
-        border-color: rgba(201,169,110,0.55);
-        transform: translateY(-3px);
+        border-color: rgba(201,169,110,0.45);
       }
 
       .scent-card img {
-        width: 100%; aspect-ratio: 1/1; object-fit: cover;
+        width: 140px; height: 140px; object-fit: cover;
         border-radius: 1px; display: block;
       }
 
       .scent-card-name {
-        font-size: 10px; letter-spacing: 0.08em; color: #c9a96e;
+        font-size: 11px; letter-spacing: 0.08em; color: #c9a96e;
         text-align: center; line-height: 1.5;
       }
       .scent-card-name span {
-        display: block; font-size: 8px; letter-spacing: 0.12em;
+        display: block; font-size: 9px; letter-spacing: 0.12em;
         color: #7a6b58; margin-top: 2px;
       }
 
       .scent-card-btn {
         font-size: 8px; letter-spacing: 0.15em; color: #a07840;
-        border: 1px solid rgba(190,159,116,0.35); padding: 3px 8px;
+        border: 1px solid rgba(190,159,116,0.35); padding: 4px 12px;
         border-radius: 1px;
       }
       .scent-card:hover .scent-card-btn {
         color: #c9a96e; border-color: rgba(201,169,110,0.6);
+      }
+
+      .scent-nav {
+        background: none; border: 1px solid rgba(190,159,116,0.25);
+        color: #a07840; font-size: 20px; line-height: 1;
+        width: 28px; height: 28px; border-radius: 1px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; flex-shrink: 0;
+        transition: border-color 0.2s, color 0.2s;
+      }
+      .scent-nav:hover { border-color: rgba(201,169,110,0.6); color: #c9a96e; }
+
+      .scent-dots {
+        display: flex; justify-content: center; gap: 7px; margin-top: 12px;
+      }
+      .scent-dot {
+        width: 5px; height: 5px; border-radius: 50%;
+        background: rgba(190,159,116,0.25); border: 1px solid rgba(190,159,116,0.35);
+        cursor: pointer; transition: background 0.25s, border-color 0.25s;
+      }
+      .scent-dot.active {
+        background: #c9a96e; border-color: #c9a96e;
+        box-shadow: 0 0 5px rgba(201,169,110,0.5);
       }
     </style>
 </head>
@@ -274,22 +305,33 @@
 
             <div id="scentPicker">
                 <div class="scent-section-label">本月選香</div>
-                <div class="scent-cards">
-                    <a class="scent-card" href="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000914690" target="_blank">
-                        <img src="https://img.cashier.ecpay.com.tw/image/resize/p600x600/2026/03/6/617787_fd35d7bcc8b6f82a729aa4a46300c1e5dc4faaf6.png" alt="夜和">
-                        <div class="scent-card-name">夜和<span>Oboro Night</span></div>
-                        <div class="scent-card-btn">前往選購</div>
-                    </a>
-                    <a class="scent-card" href="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000920061" target="_blank">
-                        <img src="https://img.cashier.ecpay.com.tw/image/resize/p600x600/2026/03/6/617787_e1f675909dedac45a70ef61b3f96cc69407fe325.png" alt="暖居">
-                        <div class="scent-card-name">暖居<span>Komorebi Haven</span></div>
-                        <div class="scent-card-btn">前往選購</div>
-                    </a>
-                    <a class="scent-card" href="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000920152" target="_blank">
-                        <img src="https://img.cashier.ecpay.com.tw/image/resize/p600x600/2026/03/6/617787_8cd2d5cc94d936982f94882db0a9805c338131ba.png" alt="朝光">
-                        <div class="scent-card-name">朝光<span>Sumi Dawn</span></div>
-                        <div class="scent-card-btn">前往選購</div>
-                    </a>
+                <div class="scent-carousel">
+                    <button class="scent-nav scent-prev" aria-label="上一個">&#8249;</button>
+                    <div class="scent-viewport">
+                        <div class="scent-track" id="scentTrack">
+                            <a class="scent-card" href="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000914690" target="_blank">
+                                <img src="https://img.cashier.ecpay.com.tw/image/resize/p600x600/2026/03/6/617787_fd35d7bcc8b6f82a729aa4a46300c1e5dc4faaf6.png" alt="夜和">
+                                <div class="scent-card-name">夜和<span>Oboro Night</span></div>
+                                <div class="scent-card-btn">前往選購</div>
+                            </a>
+                            <a class="scent-card" href="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000920061" target="_blank">
+                                <img src="https://img.cashier.ecpay.com.tw/image/resize/p600x600/2026/03/6/617787_e1f675909dedac45a70ef61b3f96cc69407fe325.png" alt="暖居">
+                                <div class="scent-card-name">暖居<span>Komorebi Haven</span></div>
+                                <div class="scent-card-btn">前往選購</div>
+                            </a>
+                            <a class="scent-card" href="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000920152" target="_blank">
+                                <img src="https://img.cashier.ecpay.com.tw/image/resize/p600x600/2026/03/6/617787_8cd2d5cc94d936982f94882db0a9805c338131ba.png" alt="朝光">
+                                <div class="scent-card-name">朝光<span>Sumi Dawn</span></div>
+                                <div class="scent-card-btn">前往選購</div>
+                            </a>
+                        </div>
+                    </div>
+                    <button class="scent-nav scent-next" aria-label="下一個">&#8250;</button>
+                </div>
+                <div class="scent-dots">
+                    <span class="scent-dot active"></span>
+                    <span class="scent-dot"></span>
+                    <span class="scent-dot"></span>
                 </div>
             </div>
 
@@ -462,6 +504,32 @@
         }
 
         document.getElementById('submitBtn').addEventListener('click', submitForm);
+
+        // ── 選香旋轉木馬 ──
+        (function () {
+            const track = document.getElementById('scentTrack');
+            const dots  = document.querySelectorAll('.scent-dot');
+            let cur = 0;
+            const total = dots.length;
+
+            function goTo(idx) {
+                cur = (idx + total) % total;
+                track.style.transform = `translateX(-${cur * 100}%)`;
+                dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+            }
+
+            document.querySelector('.scent-prev').addEventListener('click', () => goTo(cur - 1));
+            document.querySelector('.scent-next').addEventListener('click', () => goTo(cur + 1));
+            dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
+
+            let tx = 0;
+            track.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+            track.addEventListener('touchend',   e => {
+                const dx = e.changedTouches[0].clientX - tx;
+                if (Math.abs(dx) > 40) goTo(cur + (dx < 0 ? 1 : -1));
+            }, { passive: true });
+        })();
+
         initLiff();
     </script>
 </body>
