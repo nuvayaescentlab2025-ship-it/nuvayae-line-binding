@@ -230,10 +230,15 @@
       .scent-card-btn {
         font-size: 8px; letter-spacing: 0.15em; color: #a07840;
         border: 1px solid rgba(190,159,116,0.35); padding: 4px 12px;
-        border-radius: 1px;
+        border-radius: 1px; cursor: pointer; background: transparent;
+        transition: color 0.2s, border-color 0.2s, background 0.2s;
       }
       .scent-card:hover .scent-card-btn {
         color: #c9a96e; border-color: rgba(201,169,110,0.6);
+      }
+      .scent-card-btn.selected {
+        color: #c9a96e; border-color: rgba(201,169,110,0.6);
+        background: rgba(201,169,110,0.15);
       }
 
       .scent-nav {
@@ -309,21 +314,21 @@
                     <button class="scent-nav scent-prev" aria-label="上一個">&#8249;</button>
                     <div class="scent-viewport">
                         <div class="scent-track" id="scentTrack">
-                            <a class="scent-card" href="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000914690" target="_blank">
+                            <div class="scent-card">
                                 <img src="https://img.cashier.ecpay.com.tw/image/resize/p600x600/2026/03/6/617787_fd35d7bcc8b6f82a729aa4a46300c1e5dc4faaf6.png" alt="夜和">
                                 <div class="scent-card-name">夜和<span>Oboro Night</span></div>
-                                <div class="scent-card-btn">前往選購</div>
-                            </a>
-                            <a class="scent-card" href="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000920061" target="_blank">
+                                <button class="scent-card-btn selected" data-url="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000914690">已選定</button>
+                            </div>
+                            <div class="scent-card">
                                 <img src="https://img.cashier.ecpay.com.tw/image/resize/p600x600/2026/03/6/617787_e1f675909dedac45a70ef61b3f96cc69407fe325.png" alt="暖居">
                                 <div class="scent-card-name">暖居<span>Komorebi Haven</span></div>
-                                <div class="scent-card-btn">前往選購</div>
-                            </a>
-                            <a class="scent-card" href="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000920152" target="_blank">
+                                <button class="scent-card-btn" data-url="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000920061">本月選擇</button>
+                            </div>
+                            <div class="scent-card">
                                 <img src="https://img.cashier.ecpay.com.tw/image/resize/p600x600/2026/03/6/617787_8cd2d5cc94d936982f94882db0a9805c338131ba.png" alt="朝光">
                                 <div class="scent-card-name">朝光<span>Sumi Dawn</span></div>
-                                <div class="scent-card-btn">前往選購</div>
-                            </a>
+                                <button class="scent-card-btn" data-url="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000920152">本月選擇</button>
+                            </div>
                         </div>
                     </div>
                     <button class="scent-nav scent-next" aria-label="下一個">&#8250;</button>
@@ -492,7 +497,7 @@
                     inner += `<span class="cal-season-icon" style="animation-delay:${seasonIdx * 0.6}s">${SEASON_ICONS[seasonIdx]}</span>`;
                 }
                 if (isStart) {
-                    inner += `<div class="cal-start-flag"><div class="cal-start-flag-label">起始</div><div class="cal-start-flag-line"></div></div>`;
+                    inner += `<div class="cal-start-flag"><div class="cal-start-flag-label">訂閱起始</div><div class="cal-start-flag-line"></div></div>`;
                 }
                 const status = isPast ? '已訂閱' : isCurrent ? '本月進行中' : '待選擇';
                 inner += `<div class="cal-month-dot"></div><div class="cal-month-label">${label}月</div><div class="cal-tooltip">${label}月 · ${status}</div>`;
@@ -509,6 +514,7 @@
         (function () {
             const track = document.getElementById('scentTrack');
             const dots  = document.querySelectorAll('.scent-dot');
+            const buttons = document.querySelectorAll('.scent-card-btn');
             let cur = 0;
             const total = dots.length;
 
@@ -517,6 +523,70 @@
                 track.style.transform = `translateX(-${cur * 100}%)`;
                 dots.forEach((d, i) => d.classList.toggle('active', i === cur));
             }
+
+            // 按鈕點擊事件 - 呼叫選香 API
+            buttons.forEach((btn, idx) => {
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // 取得香水名稱（從卡片的 .scent-card-name 中的第一行文字）
+                    const card = btn.closest('.scent-card');
+                    const perfumeName = card.querySelector('.scent-card-name').textContent.trim().split('\n')[0];
+
+                    // 取得使用者 profile
+                    const profile = await liff.getProfile();
+
+                    // 準備 API 請求
+                    const formData = new URLSearchParams();
+                    formData.append('action', 'select_perfume');
+                    formData.append('userid', profile.userId);
+                    formData.append('perfumeName', perfumeName);
+                    formData.append('displayName', profile.displayName);
+
+                    // 禁用按鈕並顯示載入狀態
+                    btn.disabled = true;
+                    const originalText = btn.textContent;
+                    btn.textContent = '提交中...';
+
+                    try {
+                        const response = await fetch(API_URL, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const result = await response.json();
+
+                        if (result.status === 200) {
+                            // 成功：更新 UI
+                            buttons.forEach(b => {
+                                b.classList.remove('selected');
+                                b.textContent = '本月選擇';
+                                b.disabled = false;
+                            });
+
+                            btn.classList.add('selected');
+                            btn.textContent = '已選定';
+
+                            Swal.fire({
+                                title: '成功！',
+                                text: result.message,
+                                icon: 'success',
+                                confirmButtonColor: '#be9f74'
+                            });
+                        } else {
+                            // 失敗：顯示後台返回的訊息
+                            Swal.fire('選香失敗', result.message, 'error');
+                            btn.disabled = false;
+                            btn.textContent = originalText;
+                        }
+                    } catch (error) {
+                        console.error('API 錯誤:', error);
+                        Swal.fire('連線異常', '請稍後再試', 'error');
+                        btn.disabled = false;
+                        btn.textContent = originalText;
+                    }
+                });
+            });
 
             document.querySelector('.scent-prev').addEventListener('click', () => goTo(cur - 1));
             document.querySelector('.scent-next').addEventListener('click', () => goTo(cur + 1));
