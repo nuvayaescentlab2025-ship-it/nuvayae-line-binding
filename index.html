@@ -7,7 +7,174 @@
     
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script type="module" crossorigin src="./assets/index-CJvoo_LQ.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+TC:wght@200;300;400&display=swap" rel="stylesheet">
+    <style>
+      /* ── 香氛年曆 ── */
+      #yearCalendar { margin-top: 24px; width: 100%; }
+
+      .cal-section-label {
+        font-size: 9px; letter-spacing: 0.35em; text-transform: uppercase;
+        color: #7a6b58; text-align: center; margin-bottom: 16px;
+      }
+
+      .cal-timeline-container {
+        position: relative; padding: 44px 0 20px; overflow-x: auto;
+      }
+
+      .cal-timeline-container::before {
+        content: '';
+        position: absolute; top: 50%; left: 10px; right: 10px; height: 1px;
+        background: linear-gradient(90deg,
+          transparent 0%, rgba(201,169,110,0.1) 8%,
+          rgba(201,169,110,0.3) 30%, rgba(201,169,110,0.35) 50%,
+          rgba(201,169,110,0.3) 70%, rgba(201,169,110,0.1) 92%, transparent 100%);
+        transform: translateY(-50%);
+      }
+
+      .cal-timeline-track {
+        display: flex; justify-content: space-between; align-items: center;
+        position: relative; min-width: 360px;
+      }
+
+      .cal-month-node {
+        display: flex; flex-direction: column; align-items: center; gap: 8px;
+        cursor: pointer; position: relative; padding-top: 26px;
+      }
+
+      .cal-season-icon {
+        position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+        font-size: 12px; animation: calFloatUp 2.5s ease-in-out infinite;
+        filter: drop-shadow(0 0 5px rgba(201,169,110,0.4));
+      }
+
+      .cal-month-dot {
+        width: 7px; height: 7px; border-radius: 50%;
+        background: rgba(61,46,26,0.8); border: 1px solid rgba(201,169,110,0.18);
+        transition: all 0.35s ease; position: relative; flex-shrink: 0;
+      }
+
+      .cal-month-node.past .cal-month-dot {
+        background: rgba(201,169,110,0.25); border-color: rgba(201,169,110,0.35);
+      }
+      .cal-month-node.current .cal-month-dot {
+        width: 13px; height: 13px; background: #c9a96e; border-color: #c9a96e;
+        box-shadow: 0 0 10px rgba(201,169,110,0.7), 0 0 22px rgba(201,169,110,0.3);
+        animation: calCurrentPulse 2s ease-in-out infinite;
+      }
+      .cal-month-node.current .cal-month-dot::after {
+        content: ''; position: absolute; inset: -6px; border-radius: 50%;
+        border: 1px solid rgba(201,169,110,0.25);
+        animation: calRingExpand 2s ease-in-out infinite;
+      }
+      .cal-month-node.seasonal .cal-month-dot {
+        background: rgba(201,169,110,0.45); border-color: rgba(201,169,110,0.6);
+        width: 9px; height: 9px;
+        animation: calSeasonGlow 2.8s ease-in-out infinite;
+      }
+      .cal-month-node.current.seasonal .cal-month-dot {
+        width: 13px; height: 13px; background: #c9a96e;
+        animation: calCurrentPulse 2s ease-in-out infinite;
+      }
+      .cal-month-node:not(.current):hover .cal-month-dot {
+        background: rgba(201,169,110,0.5); border-color: rgba(201,169,110,0.6);
+        transform: scale(1.3);
+      }
+
+      .cal-month-label {
+        font-size: 9px; letter-spacing: 0.06em; color: #7a6b58; transition: color 0.3s;
+      }
+      .cal-month-node.past .cal-month-label    { color: rgba(201,169,110,0.4); }
+      .cal-month-node.current .cal-month-label  { color: #c9a96e; }
+      .cal-month-node.seasonal:not(.current) .cal-month-label { color: rgba(201,169,110,0.65); }
+      .cal-month-node:not(.current):hover .cal-month-label { color: rgba(201,169,110,0.75); }
+
+      .cal-tooltip {
+        position: absolute; bottom: calc(100% + 8px); left: 50%;
+        transform: translateX(-50%) translateY(4px);
+        background: rgba(45,35,24,0.97); border: 1px solid rgba(201,169,110,0.2);
+        color: #e8d5a3; font-size: 9px; letter-spacing: 0.1em;
+        padding: 5px 8px; white-space: nowrap; border-radius: 1px;
+        opacity: 0; pointer-events: none;
+        transition: opacity 0.25s ease, transform 0.25s ease; z-index: 10;
+      }
+      .cal-tooltip::after {
+        content: ''; position: absolute; top: 100%; left: 50%;
+        transform: translateX(-50%);
+        border: 4px solid transparent; border-top-color: rgba(201,169,110,0.2);
+      }
+      .cal-month-node:hover .cal-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+      .cal-month-node.start-month .cal-month-dot::before {
+        content: ''; position: absolute; inset: -5px; border-radius: 50%;
+        border: 1px dashed rgba(201,169,110,0.5);
+        animation: calStartRotate 8s linear infinite;
+      }
+
+      .cal-start-flag {
+        position: absolute; bottom: calc(100% + 8px); left: 50%;
+        transform: translateX(-50%);
+        display: flex; flex-direction: column; align-items: center; gap: 3px;
+        pointer-events: none; z-index: 5;
+        animation: calFadeInFlag 1s 0.5s ease both;
+      }
+      .cal-start-flag-label {
+        background: rgba(45,35,24,0.95); border: 1px solid rgba(201,169,110,0.35);
+        color: #c9a96e; font-size: 8px; letter-spacing: 0.15em;
+        padding: 3px 6px; white-space: nowrap; border-radius: 1px;
+      }
+      .cal-start-flag-line {
+        width: 1px; height: 8px;
+        background: linear-gradient(to bottom, rgba(201,169,110,0.4), transparent);
+      }
+
+      .cal-legend {
+        display: flex; justify-content: center; gap: 14px;
+        margin-top: 20px; flex-wrap: wrap;
+      }
+      .cal-legend-item {
+        display: flex; align-items: center; gap: 6px;
+        font-size: 9px; letter-spacing: 0.1em; color: #7a6b58;
+      }
+      .cal-legend-dot {
+        width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+      }
+      .cal-legend-dot.past     { background: rgba(201,169,110,0.25); border: 1px solid rgba(201,169,110,0.35); }
+      .cal-legend-dot.current  { background: #c9a96e; box-shadow: 0 0 8px rgba(201,169,110,0.6); }
+      .cal-legend-dot.seasonal { background: rgba(201,169,110,0.45); border: 1px solid rgba(201,169,110,0.6); }
+      .cal-legend-dot.future   { background: rgba(61,46,26,0.8); border: 1px solid rgba(201,169,110,0.18); }
+      .cal-legend-dot.start-dot { background: transparent; border: 1.5px solid #c9a96e; position: relative; }
+      .cal-legend-dot.start-dot::after {
+        content: ''; position: absolute; top: 50%; left: 50%;
+        width: 3px; height: 3px; background: #c9a96e; border-radius: 50%;
+        transform: translate(-50%,-50%);
+      }
+
+      @keyframes calFloatUp {
+        0%,100% { transform: translateX(-50%) translateY(0); }
+        50%      { transform: translateX(-50%) translateY(-4px); }
+      }
+      @keyframes calCurrentPulse {
+        0%,100% { box-shadow: 0 0 10px rgba(201,169,110,0.7), 0 0 22px rgba(201,169,110,0.3); }
+        50%     { box-shadow: 0 0 16px rgba(201,169,110,0.9), 0 0 36px rgba(201,169,110,0.4); }
+      }
+      @keyframes calRingExpand {
+        0%,100% { opacity: 0.4; transform: scale(1); }
+        50%     { opacity: 0.15; transform: scale(1.4); }
+      }
+      @keyframes calSeasonGlow {
+        0%,100% { box-shadow: 0 0 5px rgba(201,169,110,0.3); }
+        50%     { box-shadow: 0 0 12px rgba(201,169,110,0.65); }
+      }
+      @keyframes calStartRotate {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
+      }
+      @keyframes calFadeInFlag {
+        from { opacity: 0; transform: translateX(-50%) translateY(6px); }
+        to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+      }
+    </style>
+  <script type="module" crossorigin src="./assets/index-RT7aWa3j.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-DtRnUWlO.css">
 </head>
 <body>
@@ -46,6 +213,20 @@
             <div class="link-group">
                 <a href="https://nuvayaescentlab.cashier.ecpay.com.tw">✨ 進入 VIP 會員專區</a>
                 <a href="https://nuvayaescentlab.cashier.ecpay.com.tw/product/000000000912859">🌬️ 領取 | 訂閱制專屬擴香儀</a>
+            </div>
+
+            <div id="yearCalendar" class="hidden">
+                <div class="cal-section-label">您的香氛年曆</div>
+                <div class="cal-timeline-container">
+                    <div class="cal-timeline-track" id="calTimeline"></div>
+                </div>
+                <div class="cal-legend">
+                    <div class="cal-legend-item"><div class="cal-legend-dot past"></div>已訂閱</div>
+                    <div class="cal-legend-item"><div class="cal-legend-dot current"></div>本月</div>
+                    <div class="cal-legend-item"><div class="cal-legend-dot seasonal"></div>季禮月</div>
+                    <div class="cal-legend-item"><div class="cal-legend-dot start-dot"></div>訂閱起始</div>
+                    <div class="cal-legend-item"><div class="cal-legend-dot future"></div>待選擇</div>
+                </div>
             </div>
         </div>
 
