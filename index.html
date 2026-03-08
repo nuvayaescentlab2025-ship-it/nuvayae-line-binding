@@ -472,7 +472,9 @@
             const buttons = document.querySelectorAll('.scent-card-btn');
             buttons.forEach(btn => {
                 const card = btn.closest('.scent-card');
-                const cardPerfumeName = card.querySelector('.scent-card-name').textContent.trim().split('\n')[0];
+                // 只取中文香水名稱（第一個文本節點）
+                const cardNameElement = card.querySelector('.scent-card-name');
+                const cardPerfumeName = cardNameElement.childNodes[0].textContent.trim();
 
                 if (cardPerfumeName === perfumeName) {
                     btn.classList.add('selected');
