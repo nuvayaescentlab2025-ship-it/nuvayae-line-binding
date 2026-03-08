@@ -56,12 +56,15 @@ button {
 button:disabled { background-color: #ccc; }
 button:active { transform: scale(0.96); opacity: 0.9; }
 
-.link-group a { 
-    display: block; margin: 12px 0; padding: 14px; 
-    background-color: #be9f74; color: white; 
-    text-decoration: none; border-radius: 10px; 
-    font-weight: bold; transition: 0.3s; 
+.link-group a {
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    margin: 12px 0; padding: 14px 16px;
+    background-color: #be9f74; color: white;
+    text-decoration: none; border-radius: 10px;
+    font-weight: bold; transition: 0.3s;
 }
+.link-title { font-size: 15px; font-weight: 700; letter-spacing: 0.03em; }
+.link-sub { font-size: 11px; font-weight: 400; opacity: 0.88; letter-spacing: 0.04em; }
 
 .link-group a:active { transform: scale(0.96); opacity: 0.9; }
 
