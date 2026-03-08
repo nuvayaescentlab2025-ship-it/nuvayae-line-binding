@@ -123,13 +123,14 @@
         animation: calFadeInFlag 1s 0.5s ease both;
       }
       .cal-start-flag-label {
-        background: rgba(45,35,24,0.95); border: 1px solid rgba(201,169,110,0.35);
-        color: #c9a96e; font-size: 8px; letter-spacing: 0.15em;
-        padding: 3px 6px; white-space: nowrap; border-radius: 1px;
+        background: rgba(45,35,24,0.97); border: 1px solid rgba(201,169,110,0.7);
+        color: #d4b07a; font-size: 8px; letter-spacing: 0.15em;
+        padding: 3px 8px; white-space: nowrap; border-radius: 1px;
+        box-shadow: 0 0 6px rgba(201,169,110,0.25);
       }
       .cal-start-flag-line {
-        width: 1px; height: 8px;
-        background: linear-gradient(to bottom, rgba(201,169,110,0.4), transparent);
+        width: 2px; height: 16px;
+        background: linear-gradient(to bottom, rgba(201,169,110,0.85), rgba(201,169,110,0.15));
       }
 
       .cal-legend {
@@ -219,26 +220,28 @@
       }
 
       .scent-card-name {
-        font-size: 11px; letter-spacing: 0.08em; color: #c9a96e;
-        text-align: center; line-height: 1.5;
+        font-size: 15px; letter-spacing: 0.08em; color: #dfc490;
+        text-align: center; line-height: 1.5; font-weight: 400;
       }
       .scent-card-name span {
-        display: block; font-size: 9px; letter-spacing: 0.12em;
-        color: #a08060; margin-top: 2px;
+        display: block; font-size: 11px; letter-spacing: 0.14em;
+        color: #b09070; margin-top: 3px;
       }
 
       .scent-card-btn {
-        font-size: 10px; letter-spacing: 0.15em; color: #a07840;
-        border: 1px solid rgba(190,159,116,0.35); padding: 4px 12px;
+        font-size: 12px; letter-spacing: 0.15em; color: #b09060;
+        border: 1px solid rgba(190,159,116,0.35); padding: 6px 16px;
         border-radius: 1px; cursor: pointer; background: transparent;
         transition: color 0.2s, border-color 0.2s, background 0.2s;
       }
-      .scent-card:hover .scent-card-btn {
+      .scent-card:hover .scent-card-btn:not(.selected) {
         color: #c9a96e; border-color: rgba(201,169,110,0.6);
       }
       .scent-card-btn.selected {
-        color: #c9a96e; border-color: rgba(201,169,110,0.6);
-        background: rgba(201,169,110,0.15);
+        font-size: 12px; letter-spacing: 0.18em;
+        color: #f0d090; border-color: rgba(220,180,90,0.7);
+        background: rgba(201,169,110,0.22);
+        box-shadow: 0 0 8px rgba(201,169,110,0.2);
       }
 
       .scent-nav {
@@ -263,6 +266,35 @@
         background: #c9a96e; border-color: #c9a96e;
         box-shadow: 0 0 5px rgba(201,169,110,0.5);
       }
+
+      /* ── 本月專屬保留 ── */
+      .scent-reserved-block {
+        background: rgba(30,20,8,0.70);
+        border: 1px solid rgba(201,169,110,0.28);
+        border-radius: 2px; padding: 16px 18px 14px; margin-bottom: 22px;
+      }
+      .scent-reserved-header {
+        font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase;
+        color: #7a6b58; margin-bottom: 10px; text-align: center;
+      }
+      .scent-reserved-name {
+        font-size: 22px; letter-spacing: 0.12em; color: #dfc490;
+        text-align: center; margin-bottom: 12px; font-weight: 400;
+      }
+      .scent-reserved-divider {
+        width: 40px; height: 1px; margin: 10px auto 12px;
+        background: linear-gradient(90deg, transparent, rgba(201,169,110,0.35), transparent);
+      }
+      .scent-reserved-note {
+        font-size: 10px; letter-spacing: 0.07em; color: #9a8c7e;
+        text-align: center; margin: 0 0 10px; line-height: 1.8;
+      }
+      .scent-reserved-detail {
+        display: flex; align-items: flex-start; gap: 7px;
+        font-size: 10px; letter-spacing: 0.05em; color: #7a6e60;
+        margin-top: 6px; line-height: 1.75;
+      }
+      .scent-reserved-detail span:first-child { flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -309,6 +341,14 @@
             </div>
 
             <div id="scentPicker">
+                <div class="scent-reserved-block">
+                    <div class="scent-reserved-header">本月專屬保留</div>
+                    <div class="scent-reserved-name" id="reservedPerfumeName">—</div>
+                    <div class="scent-reserved-divider"></div>
+                    <p class="scent-reserved-note">本週日截止前，您皆可自由探索並隨時替換</p>
+                    <p class="scent-reserved-detail"><span>📦</span><span>您的香氛包裹預計於本週三寄出。</span></p>
+                    <p class="scent-reserved-detail"><span>🔒</span><span>下個月的選香通道，將於您簽收包裹後自動為您開啟。</span></p>
+                </div>
                 <div class="scent-section-label">本月選香</div>
                 <div class="scent-carousel">
                     <button class="scent-nav scent-prev" aria-label="上一個">&#8249;</button>
@@ -484,11 +524,13 @@
                     btn.textContent = '本月選擇';
                 }
             });
+            const reservedEl = document.getElementById('reservedPerfumeName');
+            if (reservedEl && perfumeName) reservedEl.textContent = perfumeName;
         }
 
         function renderCalendar(months) {
             const MONTH_NAMES = ['一','二','三','四','五','六','七','八','九','十','十一','十二'];
-            const SEASON_ICONS = ['🌸', '🌿', '🍂', '❄️'];
+            const SEASON_ICONS = ['🌸', '🍧', '🍂', '❄️'];
             const SEASONAL_OFFSETS = [2, 5, 8, 11]; // 季禮：訂閱第3、6、9、12個月
             const currentMonthIndex = new Date().getMonth();
             const startMonthIndex = ((currentMonthIndex - months + 1) % 12 + 12) % 12;
@@ -590,6 +632,9 @@
 
                             btn.classList.add('selected');
                             btn.textContent = '已選定';
+
+                            const reservedEl = document.getElementById('reservedPerfumeName');
+                            if (reservedEl) reservedEl.textContent = card.querySelector('.scent-card-name').childNodes[0].textContent.trim();
 
                             Swal.fire({
                                 title: '成功！',
