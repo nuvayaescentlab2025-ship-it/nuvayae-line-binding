@@ -396,6 +396,11 @@
                         document.querySelector('.progress-card').classList.remove('hidden');
                     }
 
+                    // 根據 currentPerfume 更新選香區塊的 UI
+                    if (result.currentPerfume && result.currentPerfume !== '尚未選香') {
+                        updateScentSelection(result.currentPerfume);
+                    }
+
                     document.getElementById('loadingView').classList.add('hidden');
                     document.getElementById('userName').innerText = `你好，${profile.displayName}！`;
                     document.getElementById('boundView').classList.remove('hidden');
@@ -460,6 +465,23 @@
                 Swal.fire('連線異常', '請稍後再試', 'error');
                 btn.disabled = false;
             }
+        }
+
+        // 根據香水名稱更新選香區塊的按鈕狀態
+        function updateScentSelection(perfumeName) {
+            const buttons = document.querySelectorAll('.scent-card-btn');
+            buttons.forEach(btn => {
+                const card = btn.closest('.scent-card');
+                const cardPerfumeName = card.querySelector('.scent-card-name').textContent.trim().split('\n')[0];
+
+                if (cardPerfumeName === perfumeName) {
+                    btn.classList.add('selected');
+                    btn.textContent = '已選定';
+                } else {
+                    btn.classList.remove('selected');
+                    btn.textContent = '本月選擇';
+                }
+            });
         }
 
         function renderCalendar(months) {
