@@ -14,8 +14,8 @@
       #yearCalendar { margin-top: 12px; width: 100%; }
 
       .cal-section-label {
-        font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase;
-        color: #7a6b58; text-align: center; margin-bottom: 16px;
+        font-size: 12px; letter-spacing: 0.35em; text-transform: uppercase;
+        color: #9a7a50; text-align: center; margin-bottom: 16px;
       }
 
       .cal-timeline-container {
@@ -184,8 +184,8 @@
       #scentPicker { margin-top: 28px; width: 100%; }
 
       .scent-section-label {
-        font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase;
-        color: #7a6b58; text-align: center; margin-bottom: 16px;
+        font-size: 12px; letter-spacing: 0.35em; text-transform: uppercase;
+        color: #9a7a50; text-align: center; margin-bottom: 16px;
       }
 
       /* carousel */
@@ -269,30 +269,30 @@
 
       /* ── 本月專屬保留 ── */
       .scent-reserved-block {
-        background: rgba(30,20,8,0.70);
-        border: 1px solid rgba(201,169,110,0.28);
+        background: rgba(248, 240, 222, 0.60);
+        border: 1px solid rgba(190,159,116,0.50);
         border-radius: 2px; padding: 16px 18px 14px; margin-bottom: 22px;
       }
       .scent-reserved-header {
-        font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase;
-        color: #7a6b58; margin-bottom: 10px; text-align: center;
+        font-size: 12px; letter-spacing: 0.35em; text-transform: uppercase;
+        color: #9a7844; margin-bottom: 10px; text-align: center;
       }
       .scent-reserved-name {
-        font-size: 22px; letter-spacing: 0.12em; color: #dfc490;
+        font-size: 22px; letter-spacing: 0.12em; color: #7a4a18;
         text-align: center; margin-bottom: 12px; font-weight: 400;
       }
       .scent-reserved-divider {
         width: 40px; height: 1px; margin: 10px auto 12px;
-        background: linear-gradient(90deg, transparent, rgba(201,169,110,0.35), transparent);
+        background: linear-gradient(90deg, transparent, rgba(190,159,116,0.55), transparent);
       }
       .scent-reserved-note {
-        font-size: 10px; letter-spacing: 0.07em; color: #9a8c7e;
+        font-size: 12px; letter-spacing: 0.05em; color: #6a5840;
         text-align: center; margin: 0 0 10px; line-height: 1.8;
       }
       .scent-reserved-detail {
         display: flex; align-items: flex-start; gap: 7px;
-        font-size: 10px; letter-spacing: 0.05em; color: #7a6e60;
-        margin-top: 6px; line-height: 1.75;
+        font-size: 11px; letter-spacing: 0.04em; color: #7a6040;
+        margin-top: 7px; line-height: 1.75;
       }
       .scent-reserved-detail span:first-child { flex-shrink: 0; }
     </style>
@@ -313,7 +313,7 @@
 
         <div id="boundView" class="hidden">
             <h2 id="userName" style="color: #be9f74;">歡迎回來！</h2>
-            <p id="subscriptionDuration" style="font-size: 13px; color: #555;"></p>
+            <p id="subscriptionDuration" style="font-size: 14px; color: #7a5c30; font-weight: 400;"></p>
             <div class="progress-card hidden">
               <div class="progress-header">
                 <span class="progress-fraction">
@@ -362,12 +362,12 @@
                             <div class="scent-card">
                                 <img src="https://img.cashier.ecpay.com.tw/image/resize/p600x600/2026/03/6/617787_e1f675909dedac45a70ef61b3f96cc69407fe325.png" alt="暖居">
                                 <div class="scent-card-name">暖居<span>Komorebi Haven</span></div>
-                                <button class="scent-card-btn" data-url="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000920061">本月選擇</button>
+                                <button class="scent-card-btn" data-url="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000920061">一鍵切換</button>
                             </div>
                             <div class="scent-card">
                                 <img src="https://img.cashier.ecpay.com.tw/image/resize/p600x600/2026/03/6/617787_8cd2d5cc94d936982f94882db0a9805c338131ba.png" alt="朝光">
                                 <div class="scent-card-name">朝光<span>Sumi Dawn</span></div>
-                                <button class="scent-card-btn" data-url="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000920152">本月選擇</button>
+                                <button class="scent-card-btn" data-url="https://90a5d24hxz.cashier.ecpay.com.tw/product/000000000920152">一鍵切換</button>
                             </div>
                         </div>
                     </div>
@@ -521,7 +521,7 @@
                     btn.textContent = '已選定';
                 } else {
                     btn.classList.remove('selected');
-                    btn.textContent = '本月選擇';
+                    btn.textContent = '一鍵切換';
                 }
             });
             const reservedEl = document.getElementById('reservedPerfumeName');
@@ -530,8 +530,9 @@
 
         function renderCalendar(months) {
             const MONTH_NAMES = ['一','二','三','四','五','六','七','八','九','十','十一','十二'];
-            const SEASON_ICONS = ['🌸', '🍧', '🍂', '❄️'];
-            const SEASONAL_OFFSETS = [2, 5, 8, 11]; // 季禮：訂閱第3、6、9、12個月
+            // 季禮月固定為曆月：三月🌸、六月🍧、九月🍂、十二月❄️
+            const SEASON_ICON_MAP = { 2: '🌸', 5: '🍧', 8: '🍂', 11: '❄️' };
+            const SEASONAL_MONTHS = [2, 5, 8, 11];
             const currentMonthIndex = new Date().getMonth();
             const startMonthIndex = ((currentMonthIndex - months + 1) % 12 + 12) % 12;
 
@@ -544,23 +545,22 @@
             track.innerHTML = '';
 
             MONTH_NAMES.forEach((label, i) => {
-                const offset = ((i - startMonthIndex) % 12 + 12) % 12;
                 const isPast = pastMonths.has(i);
                 const isCurrent = i === currentMonthIndex;
-                const isSeasonal = SEASONAL_OFFSETS.includes(offset);
+                const isSeasonal = SEASONAL_MONTHS.includes(i);
                 const isStart = i === startMonthIndex;
 
                 const node = document.createElement('div');
                 node.className = 'cal-month-node';
-                if (isPast)    node.classList.add('past');
-                if (isCurrent) node.classList.add('current');
+                if (isPast)     node.classList.add('past');
+                if (isCurrent)  node.classList.add('current');
                 if (isSeasonal) node.classList.add('seasonal');
-                if (isStart)   node.classList.add('start-month');
+                if (isStart)    node.classList.add('start-month');
 
                 let inner = '';
                 if (isSeasonal) {
-                    const seasonIdx = SEASONAL_OFFSETS.indexOf(offset);
-                    inner += `<span class="cal-season-icon" style="animation-delay:${seasonIdx * 0.6}s">${SEASON_ICONS[seasonIdx]}</span>`;
+                    const delayIdx = SEASONAL_MONTHS.indexOf(i);
+                    inner += `<span class="cal-season-icon" style="animation-delay:${delayIdx * 0.6}s">${SEASON_ICON_MAP[i]}</span>`;
                 }
                 if (isStart) {
                     inner += `<div class="cal-start-flag"><div class="cal-start-flag-label">訂閱起始</div><div class="cal-start-flag-line"></div></div>`;
@@ -626,7 +626,7 @@
                             // 成功：更新 UI
                             buttons.forEach(b => {
                                 b.classList.remove('selected');
-                                b.textContent = '本月選擇';
+                                b.textContent = '一鍵切換';
                                 b.disabled = false;
                             });
 
