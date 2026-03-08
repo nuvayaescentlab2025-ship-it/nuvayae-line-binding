@@ -298,7 +298,7 @@
 
       /* ── 選香顧問 banner ── */
       .agent-banner {
-        display: flex; flex-direction: column; align-items: center; gap: 5px;
+        display: flex; flex-direction: row; align-items: center; gap: 10px;
         margin-top: 16px; padding: 14px 16px;
         background: rgba(255,255,255,0.72); border: 1px solid rgba(190,159,116,0.35);
         border-radius: 10px; text-decoration: none;
@@ -306,8 +306,10 @@
       }
       .agent-banner:active { transform: scale(0.97); opacity: 0.9; }
       .agent-banner:hover { background: rgba(255,255,255,0.88); border-color: rgba(190,159,116,0.6); }
+      .agent-banner-text { display: flex; flex-direction: column; gap: 4px; flex: 1; text-align: left; }
       .agent-banner-title { font-size: 14px; font-weight: 700; color: #7a5c30; letter-spacing: 0.03em; }
       .agent-banner-sub { font-size: 11px; color: #9a7a50; letter-spacing: 0.04em; }
+      .agent-banner-icon { font-size: 22px; flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -392,8 +394,11 @@
                     <span class="scent-dot"></span>
                 </div>
                 <a href="#" id="agentBtn" class="agent-banner">
-                    <span class="agent-banner-title">✨ 不知道選什麼？詢問選香顧問</span>
-                    <span class="agent-banner-sub">描述心情/氣味偏好，煖意為您分析推薦</span>
+                    <span class="agent-banner-text">
+                        <span class="agent-banner-title">不知道選什麼？詢問選香顧問</span>
+                        <span class="agent-banner-sub">描述心情/氣味偏好，煖意為您分析推薦</span>
+                    </span>
+                    <span class="agent-banner-icon">🔍</span>
                 </a>
             </div>
 
@@ -459,7 +464,7 @@
 
                     if (result.subType === 'year') {
                         renderCalendar(months);
-                        document.getElementById('diffuserBtn').classList.add('hidden');
+                        document.getElementById('diffuserBtn').remove();
                     } else {
                         document.getElementById('currentMonth').textContent = months;
                         document.getElementById('remainingMonths').textContent = remaining;
