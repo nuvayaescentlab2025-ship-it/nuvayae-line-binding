@@ -470,6 +470,10 @@
                     // 根據 currentPerfume 更新選香區塊的 UI
                     if (result.currentPerfume && result.currentPerfume !== '尚未選香') {
                         updateScentSelection(result.currentPerfume);
+                    } else if (result.lastPerfume && result.lastPerfume !== '尚未選香') {
+                        // 本月尚未選香：以上月香氣作為預設顯示於「本月專屬保留」
+                        const reservedEl = document.getElementById('reservedPerfumeName');
+                        if (reservedEl) reservedEl.textContent = result.lastPerfume;
                     }
 
                     document.getElementById('loadingView').classList.add('hidden');
