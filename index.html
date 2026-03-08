@@ -294,6 +294,19 @@
         margin-top: 7px; line-height: 1.75;
       }
       .scent-reserved-detail span:first-child { flex-shrink: 0; }
+
+      /* ── 選香顧問 banner ── */
+      .agent-banner {
+        display: flex; flex-direction: column; align-items: center; gap: 5px;
+        margin-top: 16px; padding: 14px 16px;
+        background: rgba(255,255,255,0.72); border: 1px solid rgba(190,159,116,0.35);
+        border-radius: 10px; text-decoration: none;
+        transition: background 0.2s, border-color 0.2s;
+      }
+      .agent-banner:active { transform: scale(0.97); opacity: 0.9; }
+      .agent-banner:hover { background: rgba(255,255,255,0.88); border-color: rgba(190,159,116,0.6); }
+      .agent-banner-title { font-size: 14px; font-weight: 700; color: #7a5c30; letter-spacing: 0.03em; }
+      .agent-banner-sub { font-size: 11px; color: #9a7a50; letter-spacing: 0.04em; }
     </style>
   <script type="module" crossorigin src="./assets/index-MtJevwkA.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-DYMbRG3j.css">
@@ -348,7 +361,7 @@
                     <div class="scent-reserved-divider"></div>
                     <p class="scent-reserved-note">本週日截止前，您皆可自由探索並隨時替換</p>
                     <p class="scent-reserved-detail"><span>📦</span><span>您的香氛包裹預計於本週三寄出。</span></p>
-                    <p class="scent-reserved-detail"><span>🔒</span><span>下個月的選香通道，將於您簽收包裹後自動為您開啟。</span></p>
+                    <p class="scent-reserved-detail"><span>🔒</span><span>下月選香通道，將於您收到貨後開啟。</span></p>
                 </div>
                 <div class="scent-section-label">本月選香</div>
                 <div class="scent-carousel">
@@ -379,14 +392,14 @@
                     <span class="scent-dot"></span>
                     <span class="scent-dot"></span>
                 </div>
+                <a href="#" id="agentBtn" class="agent-banner">
+                    <span class="agent-banner-title">✨ 不知道選什麼？詢問選香顧問</span>
+                    <span class="agent-banner-sub">描述心情/氣味偏好，煖意為您分析推薦</span>
+                </a>
             </div>
 
             <p>您已具備會員資格，請選擇服務：</p>
             <div class="link-group">
-                <a href="#" id="agentBtn">
-                    <span class="link-title">✨ 不知道選什麼？詢問選香顧問</span>
-                    <span class="link-sub">描述當下心情，為您精準推薦</span>
-                </a>
                 <a href="https://nuvayaescentlab.cashier.ecpay.com.tw">
                     <span class="link-title">🗝️ 開啟 VIP 專屬個室</span>
                     <span class="link-sub">全域 85 折 ｜ 限定香氣優先選購</span>
@@ -399,8 +412,8 @@
                     <span class="link-sub">查看每個月自己選的香味</span>
                 </a>
                 <a href="#" id="warrantyBtn">
-                    <span class="link-title">🛠️ 擴香儀維修與保固</span>
-                    <span class="link-sub">查看保固內容與使用說明（清潔與使用方法）</span>
+                    <span class="link-title">🛠️ 擴香儀使用方法與維修保固</span>
+                    <span class="link-sub">維修說明及流程、清潔維護與使用方法</span>
                 </a>
             </div>
         </div>
