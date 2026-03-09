@@ -72,22 +72,6 @@
         .tutorial-card .t-title { font-size: 13px; font-weight: 500; color: var(--text-main); line-height: 1.4; }
         .tutorial-card .t-sub { font-size: 10px; color: var(--text-sub); }
 
-        /* 保固信任橫幅 */
-        .warranty-banner {
-            background: linear-gradient(135deg, #4A7C59 0%, #3A6347 100%);
-            border-radius: 12px; padding: 16px 18px;
-            display: flex; align-items: center; gap: 14px;
-            box-shadow: 0 4px 12px rgba(74,124,89,0.2);
-        }
-        .warranty-banner .wb-icon { font-size: 28px; flex-shrink: 0; }
-        .warranty-banner .wb-text h3 {
-            margin: 0 0 3px 0; font-size: 14px; font-weight: 600;
-            color: #FFF; letter-spacing: 0.5px;
-        }
-        .warranty-banner .wb-text p {
-            margin: 0; font-size: 11px; color: rgba(255,255,255,0.8); line-height: 1.5;
-        }
-
         /* 保固條款 */
         .warranty-card {
             background: var(--card-bg); border: 1px solid var(--border-soft);
@@ -119,29 +103,6 @@
         .warranty-row .w-content strong { color: var(--text-main); font-weight: 600; }
         .warranty-row.excluded-row .w-label { color: var(--text-sub); }
         .warranty-row.excluded-row .w-content { color: var(--text-sub); }
-
-        /* 申請步驟 */
-        .steps-row {
-            display: flex; align-items: flex-start; gap: 0;
-        }
-        .step-item {
-            flex: 1; display: flex; flex-direction: column; align-items: center;
-            text-align: center; gap: 6px; position: relative;
-        }
-        .step-item:not(:last-child)::after {
-            content: ''; position: absolute;
-            top: 14px; left: calc(50% + 18px); right: calc(-50% + 18px);
-            height: 1px; background: var(--gold-light);
-        }
-        .step-num {
-            width: 28px; height: 28px; border-radius: 50%;
-            background: var(--gold-light); color: var(--gold-main);
-            font-size: 12px; font-weight: 700;
-            display: flex; align-items: center; justify-content: center;
-            position: relative; z-index: 1;
-        }
-        .step-label { font-size: 11px; color: var(--text-main); line-height: 1.4; font-weight: 500; }
-        .step-sub { font-size: 10px; color: var(--text-sub); line-height: 1.4; margin-top: -2px; }
 
         /* 注意事項 */
         .notice-card {
@@ -206,22 +167,15 @@
 
         <div class="section">
             <div class="section-label">保固辦法</div>
-
-            <!-- 信任橫幅 -->
-            <div class="warranty-banner" style="margin-bottom: 12px;">
-                <span class="wb-icon">🛡️</span>
-                <div class="wb-text">
-                    <h3>訂閱期間，設備問題我們負責</h3>
-                    <p>每期配發設備，於對應訂閱期間內全程保固</p>
+            <div class="warranty-card">
+                <div class="warranty-row">
+                    <span class="w-label">保固期限</span>
+                    <span class="w-content"><strong>每期配發設備，訂閱期間內全程保固，有問題我們負責</strong></span>
                 </div>
-            </div>
-
-            <!-- 有保固 -->
-            <div class="warranty-card" style="margin-bottom: 12px;">
                 <div class="warranty-card-header covered">✅ &nbsp;保固範圍</div>
                 <div class="warranty-row">
                     <span class="w-label">機身馬達</span>
-                    <span class="w-content">確認為馬達氣流問題（非玻璃阻塞），<strong>免費更換機身</strong>。</span>
+                    <span class="w-content">確認為馬達氣流問題（非玻璃阻塞），<strong>免費更換機身</strong>。換新前將由工程師確認機況，若發現使用非純精油導致之損壞，恕不在保固範圍內。</span>
                 </div>
                 <div class="warranty-row">
                     <span class="w-label">玻璃配件</span>
@@ -230,35 +184,11 @@
                 <div class="warranty-card-header excluded">⚠️ &nbsp;不在保固範圍內</div>
                 <div class="warranty-row excluded-row">
                     <span class="w-label">人為損壞</span>
-                    <span class="w-content">摔壞插頭或機身開關、精油外流導致馬達損壞、長期未清潔致噴芯永久阻塞。</span>
+                    <span class="w-content">因使用不當、未依指示保養或外力碰撞所致之損壞，均屬人為責任，恕不在保固範圍內。</span>
                 </div>
                 <div class="warranty-row excluded-row">
                     <span class="w-label">玻璃耗材</span>
                     <span class="w-content">人為損壞的玻璃配件，基本款酌收 $680、鬱金香款 $780（免運費）。</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- 申請步驟 -->
-        <div class="section">
-            <div class="section-label">申請維修流程</div>
-            <div class="warranty-card" style="padding: 18px 12px;">
-                <div class="steps-row">
-                    <div class="step-item">
-                        <div class="step-num">1</div>
-                        <div class="step-label">拍故障影片</div>
-                        <div class="step-sub">完整記錄<br>異常狀況</div>
-                    </div>
-                    <div class="step-item">
-                        <div class="step-num">2</div>
-                        <div class="step-label">LINE 客服說明</div>
-                        <div class="step-sub">提供姓名<br>與影片</div>
-                    </div>
-                    <div class="step-item">
-                        <div class="step-num">3</div>
-                        <div class="step-label">我們來處理</div>
-                        <div class="step-sub">1–2 個工作日<br>回覆確認</div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -277,7 +207,7 @@
                 <span>💬</span> 聯絡客服申請維修
             </a>
             <p style="text-align: center; font-size: 11px; color: var(--text-sub); margin-top: 12px; line-height: 1.5;">
-                通常 1–2 個工作日回覆，有任何疑問都歡迎直接詢問。
+                維修請提供：訂閱姓名與故障影片
             </p>
         </div>
 
