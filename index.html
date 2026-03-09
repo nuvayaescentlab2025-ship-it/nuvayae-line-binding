@@ -311,6 +311,16 @@
       .agent-banner-sub { font-size: 11px; color: #9a7a50; letter-spacing: 0.04em; }
       .agent-banner-icon { font-size: 22px; flex-shrink: 0; }
 
+      /* ── 鎖定提示 ── */
+      .scent-lock-notice {
+        display: flex; align-items: flex-start; gap: 8px;
+        font-size: 12px; letter-spacing: 0.04em; color: #7a3820;
+        margin-top: 12px; padding: 10px 14px; line-height: 1.8;
+        background: rgba(160,60,20,0.07); border: 1px solid rgba(160,60,20,0.2);
+        border-radius: 2px;
+      }
+      .scent-lock-notice span:first-child { flex-shrink: 0; }
+
     </style>
 </head>
 <body>
@@ -361,7 +371,7 @@
                     <div class="scent-reserved-header">本月專屬保留</div>
                     <div class="scent-reserved-name" id="reservedPerfumeName">—</div>
                     <div class="scent-reserved-divider"></div>
-                    <p class="scent-reserved-note">本週日截止前，您皆可自由探索並隨時替換</p>
+                    <p class="scent-reserved-note" id="scentDeadlineNote">本週日截止前，您皆可自由探索並隨時替換</p>
                     <p class="scent-reserved-detail"><span>📦</span><span>您的香氛包裹預計於本週三寄出。</span></p>
                     <p class="scent-reserved-detail"><span>🔒</span><span>下月選香通道，將於您收到貨後開啟。</span></p>
                 </div>
@@ -393,6 +403,9 @@
                     <span class="scent-dot active"></span>
                     <span class="scent-dot"></span>
                     <span class="scent-dot"></span>
+                </div>
+                <div id="scentLockNotice" class="scent-lock-notice hidden">
+                    <span>🔒</span><span id="scentLockNoticeText"></span>
                 </div>
                 <a href="#" id="agentBtn" class="agent-banner">
                     <span class="agent-banner-text">
@@ -436,6 +449,7 @@
         const API_URL = 'https://script.google.com/macros/s/AKfycbyAkj2_bqp6v0mnIJWhTNRQ-OMf4zLaZgYEUXSj0MbA9fCU_hMBehiLJBOxouzH7T-wSQ/exec';
 
         let lineUserId = null;
+        let isLocked = false;
 
         async function initLiff() {
             try {
@@ -488,6 +502,13 @@
                         const reservedEl = document.getElementById('reservedPerfumeName');
                         if (reservedEl) reservedEl.textContent = result.lastPerfume;
                     }
+
+                    // 截止日 & 鎖定狀態
+                    if (result.deadline) {
+                        const deadlineEl = document.getElementById('scentDeadlineNote');
+                        if (deadlineEl) deadlineEl.textContent = `本期選香截止日為：${result.deadline}`;
+                    }
+                    applyLockState(result.isLocked === true, result.nextOrderDate || '');
 
                     document.getElementById('loadingView').classList.add('hidden');
                     document.getElementById('userName').innerText = `你好，${profile.displayName}！`;
@@ -576,6 +597,23 @@
             if (reservedEl && perfumeName) reservedEl.textContent = perfumeName;
         }
 
+        function applyLockState(locked, nextOrderDate) {
+            isLocked = locked;
+            const lockNotice = document.getElementById('scentLockNotice');
+            const lockNoticeText = document.getElementById('scentLockNoticeText');
+            const buttons = document.querySelectorAll('.scent-card-btn');
+
+            if (locked) {
+                buttons.forEach(btn => { btn.disabled = true; });
+                if (lockNotice && lockNoticeText) {
+                    lockNoticeText.textContent = `系統出貨準備中，已過選香截止日。下期選香將於 ${nextOrderDate} 後開放。`;
+                    lockNotice.classList.remove('hidden');
+                }
+            } else {
+                if (lockNotice) lockNotice.classList.add('hidden');
+            }
+        }
+
         function renderCalendar(months) {
             const MONTH_NAMES = ['一','二','三','四','五','六','七','八','九','十','十一','十二'];
             // 季禮月固定為曆月：三月🌸、六月🍧、九月🍂、十二月❄️
@@ -655,6 +693,8 @@
                 btn.addEventListener('click', async (e) => {
                     e.preventDefault();
                     e.stopPropagation();
+
+                    if (isLocked) return;
 
                     // 取得香水名稱（從卡片的 .scent-card-name 中的第一行文字）
                     const card = btn.closest('.scent-card');
