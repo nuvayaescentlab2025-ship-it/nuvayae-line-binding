@@ -624,6 +624,11 @@
 
         document.getElementById('submitBtn').addEventListener('click', submitForm);
 
+        document.getElementById('warrantyBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = new URL('./warranty.html', location.href).href;
+        });
+
         document.getElementById('historyBtn').addEventListener('click', (e) => {
             e.preventDefault();
             const url = new URL('./scent-journey.html', location.href);

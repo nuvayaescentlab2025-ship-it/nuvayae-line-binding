@@ -7,6 +7,7 @@ export default defineConfig({
       input: {
         main:    resolve(__dirname, 'index.html'),
         journey: resolve(__dirname, 'scent-journey.html'),
+        warranty: resolve(__dirname, 'warranty.html'),
       }
     }
   }
