@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>煖意 ‧ 擴香儀使用與保固</title>
+    <style>
+        :root {
+            --bg-light: #F9F7F3;
+            --card-bg: #FFFFFF;
+            --text-main: #4A4238;
+            --text-sub: #8C8273;
+            --gold-main: #CFA972;
+            --gold-light: #EBE1D1;
+            --shadow: 0 4px 12px rgba(74, 66, 56, 0.05);
+            --border-soft: #F0EBE1;
+        }
+
+        body {
+            margin: 0; padding: 20px; background-color: #EAE6DF;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-main); display: flex; justify-content: center;
+        }
+
+        .app-container {
+            width: 100%; max-width: 400px; background-color: var(--bg-light);
+            min-height: 100vh; padding: 0 0 48px 0; box-sizing: border-box;
+            position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            border-radius: 24px; overflow: hidden;
+        }
+
+        /* 導覽列 */
+        .nav-bar {
+            display: flex; align-items: center; padding: 20px;
+            background-color: rgba(249, 247, 243, 0.95); backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--border-soft);
+        }
+        .back-btn {
+            font-size: 16px; color: var(--gold-main); text-decoration: none;
+            margin-right: 16px; display: flex; align-items: center; justify-content: center;
+            width: 28px; height: 28px; border-radius: 50%; background: #FFF;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; flex-shrink: 0;
+        }
+        .page-title { font-size: 15px; font-weight: 500; color: var(--text-main); margin: 0; letter-spacing: 1px; }
+
+        /* Hero */
+        .hero-section { padding: 24px 20px 16px 20px; text-align: center; }
+        .hero-section h2 { font-size: 20px; color: var(--gold-main); margin: 0 0 6px 0; font-weight: 500; letter-spacing: 1px; }
+        .hero-section p { font-size: 12px; color: var(--text-sub); margin: 0; line-height: 1.5; }
+
+        /* 區塊共用 */
+        .section { padding: 0 20px; margin-bottom: 28px; }
+
+        .section-label {
+            font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+            color: var(--gold-main); margin-bottom: 12px;
+        }
+
+        /* 教學卡片格 */
+        .tutorial-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .tutorial-card {
+            background: var(--card-bg); border: 1px solid var(--border-soft);
+            border-radius: 12px; padding: 16px 12px; text-align: center;
+            text-decoration: none; color: var(--text-main);
+            box-shadow: var(--shadow); transition: transform 0.15s, border-color 0.15s;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+        .tutorial-card:active { transform: scale(0.96); }
+        .tutorial-card:hover { border-color: var(--gold-main); }
+        .tutorial-card .t-icon { font-size: 26px; }
+        .tutorial-card .t-title { font-size: 13px; font-weight: 500; color: var(--text-main); line-height: 1.4; }
+        .tutorial-card .t-sub { font-size: 10px; color: var(--text-sub); }
+
+        /* 保固條款 */
+        .warranty-card {
+            background: var(--card-bg); border: 1px solid var(--border-soft);
+            border-radius: 12px; overflow: hidden; box-shadow: var(--shadow);
+        }
+        .warranty-row {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 14px 16px; border-bottom: 1px solid var(--border-soft);
+        }
+        .warranty-row:last-child { border-bottom: none; }
+        .warranty-row .w-label {
+            font-size: 11px; letter-spacing: 0.05em; color: var(--gold-main);
+            white-space: nowrap; padding-top: 1px; min-width: 56px;
+        }
+        .warranty-row .w-content { font-size: 12px; color: var(--text-main); line-height: 1.75; }
+        .warranty-row .w-content strong { color: var(--text-main); font-weight: 600; }
+
+        /* 注意事項 */
+        .notice-card {
+            background: rgba(207,169,114,0.08); border: 1px solid rgba(207,169,114,0.3);
+            border-radius: 12px; padding: 14px 16px;
+        }
+        .notice-card p {
+            margin: 0 0 6px 0; font-size: 12px; color: var(--text-sub);
+            line-height: 1.75; display: flex; gap: 8px;
+        }
+        .notice-card p:last-child { margin-bottom: 0; }
+        .notice-card p span:first-child { flex-shrink: 0; }
+
+        /* 聯絡按鈕 */
+        .contact-btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            background: #00B900; color: #FFF; text-decoration: none;
+            padding: 14px; border-radius: 30px; font-size: 14px; font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,185,0,0.25); letter-spacing: 0.05em;
+        }
+        .contact-btn:active { opacity: 0.85; transform: scale(0.98); }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+
+        <div class="nav-bar">
+            <a class="back-btn" id="backBtn">❮</a>
+            <h1 class="page-title">擴香儀使用與保固</h1>
+        </div>
+
+        <div class="hero-section">
+            <h2>煖意 ‧ 擴香儀</h2>
+            <p>讓每一次香氣擴散，都維持最純粹的狀態</p>
+        </div>
+
+        <!-- 使用與清潔教學 -->
+        <div class="section">
+            <div class="section-label">使用與清潔教學</div>
+            <div class="tutorial-grid">
+                <a href="#" class="tutorial-card">
+                    <span class="t-icon">▶️</span>
+                    <span class="t-title">首次使用教學</span>
+                    <span class="t-sub">開箱 · 安裝 · 啟動</span>
+                </a>
+                <a href="#" class="tutorial-card">
+                    <span class="t-icon">🧴</span>
+                    <span class="t-title">日常清潔方式</span>
+                    <span class="t-sub">每月例行保養步驟</span>
+                </a>
+                <a href="#" class="tutorial-card">
+                    <span class="t-icon">🔄</span>
+                    <span class="t-title">換香操作說明</span>
+                    <span class="t-sub">安全更換精油瓶</span>
+                </a>
+                <a href="#" class="tutorial-card">
+                    <span class="t-icon">⚙️</span>
+                    <span class="t-title">常見問題排查</span>
+                    <span class="t-sub">霧量 · 異音 · 不啟動</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 保固辦法 -->
+        <div class="section">
+            <div class="section-label">保固辦法</div>
+            <div class="warranty-card">
+                <div class="warranty-row">
+                    <span class="w-label">保固期限</span>
+                    <span class="w-content"><strong>購買日起 12 個月</strong></span>
+                </div>
+                <div class="warranty-row">
+                    <span class="w-label">保固範圍</span>
+                    <span class="w-content">非人為因素造成的零件故障、馬達異常、霧化功能失效</span>
+                </div>
+                <div class="warranty-row">
+                    <span class="w-label">不在範圍</span>
+                    <span class="w-content">碰撞損壞、液體入侵、自行拆修、耗材（精油）</span>
+                </div>
+                <div class="warranty-row">
+                    <span class="w-label">申請方式</span>
+                    <span class="w-content">透過下方 LINE 客服提供購買憑證與問題說明，我們將於 2 個工作日內回覆</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 注意事項 -->
+        <div class="section">
+            <div class="section-label">使用注意事項</div>
+            <div class="notice-card">
+                <p><span>💧</span><span>請勿加入水或其他非煖意精油，以免損壞霧化片。</span></p>
+                <p><span>☀️</span><span>避免陽光直射或高溫、潮濕環境擺放。</span></p>
+                <p><span>🔌</span><span>長時間不使用時，請拔除電源並蓋上防塵蓋。</span></p>
+                <p><span>🧹</span><span>建議每月以棉棒輕輕清潔霧化片一次，維持最佳出霧效果。</span></p>
+            </div>
+        </div>
+
+        <!-- 聯絡客服 -->
+        <div class="section">
+            <a href="https://line.me/R/ti/p/@nuvayae" class="contact-btn">
+                <span>💬</span> 聯絡客服申請維修
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        document.getElementById('backBtn').addEventListener('click', () => history.back());
+    </script>
+</body>
+</html>
