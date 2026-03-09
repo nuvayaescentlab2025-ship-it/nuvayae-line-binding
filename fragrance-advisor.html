@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>煖意專屬選香師｜瑤</title>
+    <title>煖意專屬選香師｜Honoka</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@200;300;400&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -236,7 +236,7 @@
         <div class="slot-indicator"><div class="slot-dot" id="slot-preferences"></div>香調</div>
         <div class="slot-indicator"><div class="slot-dot" id="slot-dislikes"></div>地雷</div>
         <div class="slot-indicator"><div class="slot-dot" id="slot-occasion"></div>場合</div>
-        <div class="slot-indicator"><div class="slot-dot" id="slot-budget"></div>預算</div>
+        <div class="slot-indicator"><div class="slot-dot" id="slot-health_conditions"></div>健康</div>
     </div>
 
     <div class="scroll-area" id="scrollArea">
@@ -249,7 +249,7 @@
 
     <!-- 輸入區（active 狀態） -->
     <div class="input-area" id="inputArea">
-        <input type="text" id="msgInput" placeholder="告訴瑤您的心情或偏好...">
+        <input type="text" id="msgInput" placeholder="告訴 Honoka 您的心情或偏好...">
         <button class="send-btn" id="sendBtn" type="button">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -337,7 +337,7 @@
         let html = `
             <div class="step-title">
                 <div class="title-dot"></div>
-                <span>煖意選香師｜瑤</span>
+                <span>煖意選香師｜Honoka</span>
             </div>
             <div class="memory-card agent-card">
                 <div class="scent-color-bar bar-agent"></div>
@@ -394,7 +394,7 @@
         row.innerHTML = `
             <div class="step-title">
                 <div class="title-dot"></div>
-                <span>煖意選香師｜瑤</span>
+                <span>煖意選香師｜Honoka</span>
             </div>
             <div class="memory-card agent-card">
                 <div class="scent-color-bar bar-agent"></div>
@@ -421,7 +421,7 @@
             preferences: state.preferences && state.preferences.length > 0 ? 'filled' : null,
             dislikes: state.dislikes && state.dislikes.length > 0 ? 'filled' : null,
             occasion: state.occasion,
-            budget: state.budget,
+            health_conditions: state.health_conditions && state.health_conditions.length > 0 ? 'filled' : null,
         };
         Object.entries(slots).forEach(([key, val]) => {
             const dot = document.getElementById(`slot-${key}`);
