@@ -135,25 +135,21 @@
             12: { icon: '❄️', label: '冬季專屬禮贈', desc: '歲末的珍貴，以心意為您包裝。',       barColor: '#C5D5E8' },
         };
 
+        // ── Mock 資料（工程師串接前的設計稿預覽） ──
+        // 格式與後端 history 陣列相同，串接後直接替換
+        const MOCK_HISTORY = [
+            { year: 2026, month: 3, monthIndex: 3, perfumeName: '朝光', isCurrent: true  },
+            { year: 2026, month: 2, monthIndex: 2, perfumeName: '夜和', isCurrent: false },
+            { year: 2026, month: 1, monthIndex: 1, perfumeName: '暖居', isCurrent: false },
+        ];
+
         document.getElementById('backBtn').addEventListener('click', () => history.back());
 
         function buildItems(result) {
-            // 若後端日後回傳 history 陣列，直接使用
+            // 後端串接後：回傳 history 陣列即自動切換為真實資料
             if (Array.isArray(result.history) && result.history.length) return result.history;
-
-            const { months, currentPerfume, lastPerfume } = result;
-            const now = new Date();
-            const items = [];
-
-            for (let i = 1; i <= months; i++) {
-                const offset = months - i; // 0 = 本月, 1 = 上月, ...
-                const d = new Date(now.getFullYear(), now.getMonth() - offset, 1);
-                let perfumeName = null;
-                if (offset === 0 && currentPerfume && currentPerfume !== '尚未選香') perfumeName = currentPerfume;
-                if (offset === 1 && lastPerfume   && lastPerfume   !== '尚未選香') perfumeName = lastPerfume;
-                items.push({ year: d.getFullYear(), month: d.getMonth() + 1, monthIndex: i, perfumeName, isCurrent: offset === 0 });
-            }
-            return items.reverse(); // 最新在前
+            // 尚未串接：顯示 mock 設計稿
+            return MOCK_HISTORY;
         }
 
         function renderItem(item) {
