@@ -674,6 +674,11 @@
             window.location.href = url.href;
         });
 
+        document.getElementById('agentBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = new URL('./fragrance-advisor.html', location.href).href;
+        });
+
         // ── 選香旋轉木馬 ──
         (function () {
             const track = document.getElementById('scentTrack');
