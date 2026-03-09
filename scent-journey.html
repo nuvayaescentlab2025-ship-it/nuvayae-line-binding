@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>煖意 - 香氛記憶 (動態文案最終版)</title>
+    <title>煖意 ‧ 氣味旅程</title>
     <style>
         :root {
-            --bg-light: #F9F7F3; 
-            --card-bg: #FFFFFF; 
-            --text-main: #4A4238; 
-            --text-sub: #8C8273; 
-            --gold-main: #CFA972; 
-            --gold-light: #EBE1D1; 
-            --shadow: 0 4px 12px rgba(74, 66, 56, 0.05); 
-            --border-soft: #F0EBE1; 
+            --bg-light: #F9F7F3;
+            --card-bg: #FFFFFF;
+            --text-main: #4A4238;
+            --text-sub: #8C8273;
+            --gold-main: #CFA972;
+            --gold-light: #EBE1D1;
+            --shadow: 0 4px 12px rgba(74, 66, 56, 0.05);
+            --border-soft: #F0EBE1;
         }
 
         body {
@@ -29,143 +29,212 @@
             border-radius: 24px; overflow: hidden;
         }
 
-        /* 頂部導覽列 */
         .nav-bar {
             display: flex; align-items: center; padding: 20px;
             background-color: rgba(249, 247, 243, 0.95); backdrop-filter: blur(10px);
             position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--border-soft);
         }
-        .back-btn { font-size: 16px; color: var(--gold-main); text-decoration: none; margin-right: 16px; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: #FFF; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .back-btn {
+            font-size: 16px; color: var(--gold-main); text-decoration: none;
+            margin-right: 16px; display: flex; align-items: center; justify-content: center;
+            width: 28px; height: 28px; border-radius: 50%; background: #FFF;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer;
+        }
         .page-title { font-size: 15px; font-weight: 500; color: var(--text-main); margin: 0; letter-spacing: 1px; }
 
         .hero-section { padding: 24px 20px 16px 20px; text-align: center; }
         .hero-section h2 { font-size: 20px; color: var(--gold-main); margin: 0 0 6px 0; font-weight: 500; letter-spacing: 1px; }
         .hero-section p { font-size: 12px; color: var(--text-sub); margin: 0; line-height: 1.5; }
 
-        /* 時間軸設計 */
         .timeline-container { padding: 0 20px; position: relative; margin-top: 10px; }
-        .timeline-container::before { content: ''; position: absolute; left: 26px; top: 10px; bottom: 10px; width: 1px; background: dashed 1px var(--gold-light); }
+        .timeline-container::before {
+            content: ''; position: absolute; left: 26px; top: 10px; bottom: 10px;
+            width: 1px; border-left: 1px dashed var(--gold-light);
+        }
 
         .history-item { position: relative; padding-left: 32px; margin-bottom: 28px; }
-        
+
         .timeline-dot {
             position: absolute; left: 3px; top: 4px; width: 10px; height: 10px;
             border-radius: 50%; background-color: var(--card-bg); border: 2px solid var(--gold-light); z-index: 2;
         }
+        .timeline-dot.active {
+            border-color: var(--gold-main);
+            background: var(--gold-main);
+            box-shadow: 0 0 0 3px rgba(207,169,114,0.2);
+        }
 
-        .history-date { font-size: 12px; font-weight: 500; color: var(--gold-main); margin-bottom: 10px; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center;}
-        .history-date span:last-child { color: var(--text-sub); font-size: 11px; font-weight: 400;}
+        .history-date {
+            font-size: 12px; font-weight: 500; color: var(--gold-main);
+            margin-bottom: 10px; letter-spacing: 0.5px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .history-date span:last-child { color: var(--text-sub); font-size: 11px; font-weight: 400; }
 
-        /* 四季專屬禮贈區塊 */
         .milestone-gift {
             background: var(--card-bg); border: 1px solid var(--border-soft);
             border-radius: 10px; padding: 12px 14px 12px 16px;
             margin-bottom: 12px; display: flex; align-items: center; gap: 12px;
             box-shadow: var(--shadow); position: relative; overflow: hidden;
         }
-        
-        /* 四季色彩設定 */
-        .color-spring { background-color: #FFB7C5; } /* 櫻花粉 */
-        
         .milestone-gift .gift-icon { font-size: 18px; }
         .milestone-gift .gift-text { display: flex; flex-direction: column; gap: 2px; }
-        .milestone-gift .gift-text strong { font-size: 13px; color: var(--text-main); font-weight: 500;}
+        .milestone-gift .gift-text strong { font-size: 13px; color: var(--text-main); font-weight: 500; }
         .milestone-gift .gift-text span { font-size: 11px; color: var(--text-sub); }
 
-        /* 記憶卡片 */
         .memory-card {
             background-color: var(--card-bg); border-radius: 10px;
-            padding: 14px 14px 14px 16px; 
+            padding: 14px 14px 14px 16px;
             box-shadow: var(--shadow); border: 1px solid var(--border-soft);
             position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 6px;
         }
-        
-        /* 🌿 精油專屬色塊 */
-        .scent-color-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
-        .color-yehe { background-color: #D6CADD; } 
-        .color-chaoguang { background-color: #D0E5D2; } 
-        .color-nuanju { background-color: #F4D5A6; } 
+        .memory-card.unknown { opacity: 0.45; }
 
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;}
-        .memory-card h4 { margin: 0; font-size: 15px; color: var(--text-main); font-weight: 500; letter-spacing: 0.5px;}
+        .scent-color-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .memory-card h4 { margin: 0; font-size: 15px; color: var(--text-main); font-weight: 500; letter-spacing: 0.5px; }
         .scent-tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-soft); color: var(--text-sub); }
-        
-        /* 動態文案 */
         .memory-card p { margin: 0; font-size: 12px; color: var(--text-sub); line-height: 1.5; }
+
+        .status-msg { text-align: center; padding: 48px 20px; font-size: 13px; color: var(--text-sub); line-height: 1.8; }
 
         .end-mark { text-align: center; color: var(--gold-light); font-size: 20px; margin-top: 30px; }
     </style>
 </head>
 <body>
-
     <div class="app-container">
-        
         <div class="nav-bar">
-            <a href="#" class="back-btn">❮</a>
+            <a class="back-btn" id="backBtn">❮</a>
             <h1 class="page-title">香氛記憶</h1>
         </div>
-
         <div class="hero-section">
             <h2>煖意 ‧ 氣味旅程</h2>
             <p>每一縷氣味，都是生活的碎片</p>
         </div>
-
-        <div class="timeline-container">
-            
-            <div class="history-item">
-                <div class="timeline-dot"></div>
-                <div class="history-date"><span>2026.03</span> <span>第 3 個月</span></div>
-                
-                <div class="milestone-gift">
-                    <div class="scent-color-bar color-spring"></div>
-                    <div class="gift-icon">🌸</div>
-                    <div class="gift-text">
-                        <strong>春季專屬禮贈</strong>
-                        <span>迎接春日，為您送上專屬的季禮心意。</span>
-                    </div>
-                </div>
-
-                <div class="memory-card">
-                    <div class="scent-color-bar color-chaoguang"></div>
-                    <div class="card-header">
-                        <h4>朝光</h4>
-                        <div class="scent-tag">經典系列</div>
-                    </div>
-                    <p>冷冽森林木質調。<br>如同漫步在清晨沾滿露水的杉林，帶來煥然一新的澄澈生機。</p>
-                </div>
-            </div>
-
-            <div class="history-item">
-                <div class="timeline-dot"></div>
-                <div class="history-date"><span>2026.02</span> <span>第 2 個月</span></div>
-                <div class="memory-card">
-                    <div class="scent-color-bar color-yehe"></div>
-                    <div class="card-header">
-                        <h4>夜和</h4>
-                        <div class="scent-tag">經典系列</div>
-                    </div>
-                    <p>寧靜草本木質調。<br>化作一條鬆軟的無形毛毯，溫柔包裹住生活的疲憊，給予月色般的擁抱。</p>
-                </div>
-            </div>
-
-            <div class="history-item">
-                <div class="timeline-dot"></div>
-                <div class="history-date"><span>2026.01</span> <span>第 1 個月</span></div>
-                <div class="memory-card">
-                    <div class="scent-color-bar color-nuanju"></div>
-                    <div class="card-header">
-                        <h4>暖居</h4>
-                        <div class="scent-tag">經典系列</div>
-                    </div>
-                    <p>溫暖果香木質調。<br>點亮一盞冬日裡的暖光，將所有的寒意與不安溫柔地隔絕在外。</p>
-                </div>
-            </div>
-
+        <div class="timeline-container" id="timeline">
+            <p class="status-msg">正在讀取您的香氛記憶⋯</p>
         </div>
-
-        <div class="end-mark">❦</div>
-
+        <div class="end-mark" id="endMark" style="display:none">❦</div>
     </div>
 
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyAkj2_bqp6v0mnIJWhTNRQ-OMf4zLaZgYEUXSj0MbA9fCU_hMBehiLJBOxouzH7T-wSQ/exec';
+
+        const SCENT_STYLES = {
+            '夜和': { barColor: '#D6CADD', desc: '寧靜草本木質調。化作一條鬆軟的無形毛毯，溫柔包裹住生活的疲憊，給予月色般的擁抱。' },
+            '朝光': { barColor: '#D0E5D2', desc: '冷冽森林木質調。如同漫步在清晨沾滿露水的杉林，帶來煥然一新的澄澈生機。' },
+            '暖居': { barColor: '#F4D5A6', desc: '溫暖果香木質調。點亮一盞冬日裡的暖光，將所有的寒意與不安溫柔地隔絕在外。' },
+        };
+
+        // 季禮月：依曆月（3=春、6=夏、9=秋、12=冬）
+        const SEASON_GIFTS = {
+            3:  { icon: '🌸', label: '春季專屬禮贈', desc: '迎接春日，為您送上專屬的季禮心意。', barColor: '#FFB7C5' },
+            6:  { icon: '🍧', label: '夏季專屬禮贈', desc: '盛夏的清涼，特別為您備妥。',         barColor: '#AEE3E8' },
+            9:  { icon: '🍂', label: '秋季專屬禮贈', desc: '金秋的暖意，靜靜為您守候。',         barColor: '#E8C49A' },
+            12: { icon: '❄️', label: '冬季專屬禮贈', desc: '歲末的珍貴，以心意為您包裝。',       barColor: '#C5D5E8' },
+        };
+
+        document.getElementById('backBtn').addEventListener('click', () => history.back());
+
+        function buildItems(result) {
+            // 若後端日後回傳 history 陣列，直接使用
+            if (Array.isArray(result.history) && result.history.length) return result.history;
+
+            const { months, currentPerfume, lastPerfume } = result;
+            const now = new Date();
+            const items = [];
+
+            for (let i = 1; i <= months; i++) {
+                const offset = months - i; // 0 = 本月, 1 = 上月, ...
+                const d = new Date(now.getFullYear(), now.getMonth() - offset, 1);
+                let perfumeName = null;
+                if (offset === 0 && currentPerfume && currentPerfume !== '尚未選香') perfumeName = currentPerfume;
+                if (offset === 1 && lastPerfume   && lastPerfume   !== '尚未選香') perfumeName = lastPerfume;
+                items.push({ year: d.getFullYear(), month: d.getMonth() + 1, monthIndex: i, perfumeName, isCurrent: offset === 0 });
+            }
+            return items.reverse(); // 最新在前
+        }
+
+        function renderItem(item) {
+            const { year, month, monthIndex, perfumeName, isCurrent } = item;
+            const dateLabel = `${year}.${String(month).padStart(2, '0')}`;
+            const season = SEASON_GIFTS[month];
+            const style  = perfumeName ? SCENT_STYLES[perfumeName] : null;
+            const dotClass = isCurrent ? 'timeline-dot active' : 'timeline-dot';
+
+            let html = `
+                <div class="history-item">
+                    <div class="${dotClass}"></div>
+                    <div class="history-date">
+                        <span>${dateLabel}</span>
+                        <span>第 ${monthIndex} 個月${isCurrent ? ' · 本月' : ''}</span>
+                    </div>`;
+
+            if (season) {
+                html += `
+                    <div class="milestone-gift">
+                        <div class="scent-color-bar" style="background:${season.barColor}"></div>
+                        <div class="gift-icon">${season.icon}</div>
+                        <div class="gift-text">
+                            <strong>${season.label}</strong>
+                            <span>${season.desc}</span>
+                        </div>
+                    </div>`;
+            }
+
+            if (perfumeName) {
+                const barColor = style ? style.barColor : '#DDD';
+                const desc     = style ? style.desc : '';
+                html += `
+                    <div class="memory-card">
+                        <div class="scent-color-bar" style="background:${barColor}"></div>
+                        <div class="card-header">
+                            <h4>${perfumeName}</h4>
+                            <div class="scent-tag">經典系列</div>
+                        </div>
+                        ${desc ? `<p>${desc}</p>` : ''}
+                    </div>`;
+            } else {
+                html += `
+                    <div class="memory-card unknown">
+                        <div class="scent-color-bar" style="background:#DDD"></div>
+                        <div class="card-header"><h4>—</h4></div>
+                        <p>香氛記憶整理中</p>
+                    </div>`;
+            }
+
+            html += `</div>`;
+            return html;
+        }
+
+        async function loadJourney() {
+            const userId  = new URLSearchParams(location.search).get('userid');
+            const timeline = document.getElementById('timeline');
+
+            if (!userId) {
+                timeline.innerHTML = '<p class="status-msg">無法取得會員資訊，<br>請返回重試。</p>';
+                return;
+            }
+
+            try {
+                const res    = await fetch(`${API_URL}?userid=${encodeURIComponent(userId)}`);
+                const result = await res.json();
+
+                if (!result.isBound) {
+                    timeline.innerHTML = '<p class="status-msg">查無訂閱記錄。</p>';
+                    return;
+                }
+
+                const items = buildItems(result);
+                timeline.innerHTML = items.map(renderItem).join('');
+                document.getElementById('endMark').style.display = 'block';
+            } catch (e) {
+                timeline.innerHTML = '<p class="status-msg">載入失敗，請稍後再試。</p>';
+            }
+        }
+
+        loadJourney();
+    </script>
 </body>
 </html>

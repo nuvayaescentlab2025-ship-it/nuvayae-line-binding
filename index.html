@@ -431,6 +431,8 @@
 
         const API_URL = 'https://script.google.com/macros/s/AKfycbyAkj2_bqp6v0mnIJWhTNRQ-OMf4zLaZgYEUXSj0MbA9fCU_hMBehiLJBOxouzH7T-wSQ/exec';
 
+        let lineUserId = null;
+
         async function initLiff() {
             try {
                 await liff.init({ liffId: "2009177086-5AGq54Qb" });
@@ -451,6 +453,7 @@
             try {
                 const profile = await liff.getProfile();
                 const userId = profile.userId;
+                lineUserId = userId;
                 
                 // 這裡發送 GET 請求給 GAS
                 const response = await fetch(`${API_URL}?userid=${userId}`);
@@ -616,6 +619,13 @@
         }
 
         document.getElementById('submitBtn').addEventListener('click', submitForm);
+
+        document.getElementById('historyBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            const url = new URL('./scent-journey.html', location.href);
+            if (lineUserId) url.searchParams.set('userid', lineUserId);
+            window.location.href = url.href;
+        });
 
         // ── 選香旋轉木馬 ──
         (function () {
