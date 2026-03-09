@@ -77,19 +77,6 @@
             background: var(--card-bg); border: 1px solid var(--border-soft);
             border-radius: 12px; overflow: hidden; box-shadow: var(--shadow);
         }
-        .warranty-card-header {
-            padding: 10px 16px; font-size: 10px; letter-spacing: 0.1em;
-            font-weight: 600; display: flex; align-items: center; gap: 6px;
-        }
-        .warranty-card-header.covered {
-            background: rgba(74,124,89,0.07); color: #4A7C59;
-            border-bottom: 1px solid rgba(74,124,89,0.12);
-        }
-        .warranty-card-header.excluded {
-            background: rgba(140,130,115,0.07); color: var(--text-sub);
-            border-bottom: 1px solid var(--border-soft);
-            border-top: 1px solid var(--border-soft);
-        }
         .warranty-row {
             display: flex; align-items: flex-start; gap: 12px;
             padding: 13px 16px; border-bottom: 1px solid var(--border-soft);
@@ -101,8 +88,6 @@
         }
         .warranty-row .w-content { font-size: 12px; color: var(--text-main); line-height: 1.75; }
         .warranty-row .w-content strong { color: var(--text-main); font-weight: 600; }
-        .warranty-row.excluded-row .w-label { color: var(--text-sub); }
-        .warranty-row.excluded-row .w-content { color: var(--text-sub); }
 
         /* 注意事項 */
         .notice-card {
@@ -170,25 +155,19 @@
             <div class="warranty-card">
                 <div class="warranty-row">
                     <span class="w-label">保固期限</span>
-                    <span class="w-content"><strong>每期配發設備，訂閱期間內全程保固，有問題我們負責</strong></span>
-                </div>
-                <div class="warranty-card-header covered">✅ &nbsp;保固範圍</div>
-                <div class="warranty-row">
-                    <span class="w-label">機身馬達</span>
-                    <span class="w-content">確認為馬達氣流問題（非玻璃阻塞），<strong>免費更換機身</strong>。換新前將由工程師確認機況，若發現使用非純精油導致之損壞，恕不在保固範圍內。</span>
+                    <span class="w-content"><strong>每期配發設備，於對應訂閱期間內全程保固</strong></span>
                 </div>
                 <div class="warranty-row">
-                    <span class="w-label">玻璃配件</span>
-                    <span class="w-content">物流過程中破損，<strong>免費換新</strong>（免運費）。</span>
+                    <span class="w-label">保固範圍</span>
+                    <span class="w-content">機身馬達氣流問題免費換機；玻璃配件物流破損免費換新（皆免運）。</span>
                 </div>
-                <div class="warranty-card-header excluded">⚠️ &nbsp;不在保固範圍內</div>
-                <div class="warranty-row excluded-row">
-                    <span class="w-label">人為損壞</span>
-                    <span class="w-content">因使用不當、未依指示保養或外力碰撞所致之損壞，均屬人為責任，恕不在保固範圍內。</span>
+                <div class="warranty-row">
+                    <span class="w-label">不在範圍</span>
+                    <span class="w-content">人為損壞、使用非純精油、外力碰撞、長期未清潔所致之損壞。玻璃人為損壞基本款 $680、鬱金香款 $780（免運）。</span>
                 </div>
-                <div class="warranty-row excluded-row">
-                    <span class="w-label">玻璃耗材</span>
-                    <span class="w-content">人為損壞的玻璃配件，基本款酌收 $680、鬱金香款 $780（免運費）。</span>
+                <div class="warranty-row">
+                    <span class="w-label">申請方法</span>
+                    <span class="w-content">拍攝故障影片，透過下方 LINE 客服提供姓名與影片即可申請。</span>
                 </div>
             </div>
         </div>
