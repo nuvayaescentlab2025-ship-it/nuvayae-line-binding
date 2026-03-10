@@ -14,7 +14,6 @@
             --gold-light: #EBE1D1;
             --shadow: 0 4px 12px rgba(74, 66, 56, 0.05);
             --border-soft: #F0EBE1;
-            --ig-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
             --danger-red: #D9534F;
         }
 
@@ -56,24 +55,6 @@
             font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
             color: var(--gold-main); margin-bottom: 12px;
         }
-
-        /* 影片連結卡片 */
-        .video-card {
-            display: flex; align-items: center; justify-content: space-between;
-            background: var(--card-bg); border: 1px solid var(--border-soft);
-            border-radius: 12px; padding: 16px; text-decoration: none;
-            box-shadow: var(--shadow); transition: transform 0.15s; margin-bottom: 20px;
-        }
-        .video-card:active { transform: scale(0.98); }
-        .video-content { display: flex; align-items: center; gap: 12px; }
-        .ig-icon {
-            width: 36px; height: 36px; border-radius: 10px;
-            background: var(--ig-gradient); color: #FFF;
-            display: flex; align-items: center; justify-content: center; font-size: 20px;
-        }
-        .video-text h4 { margin: 0 0 4px 0; font-size: 14px; color: var(--text-main); font-weight: 600; }
-        .video-text p { margin: 0; font-size: 11px; color: var(--text-sub); }
-        .play-btn { color: var(--gold-main); font-size: 18px; }
 
         /* 步驟卡片 */
         .step-list { display: flex; flex-direction: column; gap: 12px; }
@@ -128,60 +109,47 @@
         </div>
 
         <div class="section">
-            <a href="您的IG換香教學影片網址" target="_blank" class="video-card">
-                <div class="video-content">
-                    <div class="ig-icon">🪄</div>
-                    <div class="video-text">
-                        <h4>觀看 30 秒換香示範</h4>
-                        <p>跟著影片，不怕操作失誤</p>
-                    </div>
-                </div>
-                <div class="play-btn">➔</div>
-            </a>
-        </div>
+            <div class="section-label">換香步驟</div>
 
-        <div class="section">
-            <div class="section-label">零失誤換香步驟</div>
-            
             <div class="step-list">
-                
+
                 <div class="step-card">
                     <div class="step-icon-badge">🤏</div>
                     <div class="step-content">
-                        <h4>步驟 1：取下瓶蓋</h4>
-                        <p>請務必<strong>先將頂部集油瓶蓋取下</strong>並放妥。如果不先拿起來，後續拔瓶子時很容易噴飛摔破喔！</p>
+                        <h4>取下瓶蓋</h4>
+                        <p>先取下頂部集油蓋並放妥，避免後續拔瓶時摔破。</p>
                     </div>
                 </div>
 
                 <div class="step-card warning-step">
                     <div class="step-icon-badge">⚡</div>
                     <div class="step-content">
-                        <h4 class="danger-text">步驟 2：務必先開啟電源！</h4>
-                        <p>⚠️ <strong>絕對關鍵：</strong>在噴灑酒精前，請<span class="danger-text">一定要先打開擴香儀電源</span>！若未通電就噴灑，酒精會直接漏進底座，導致馬達損壞（此屬人為損壞，不列入保固）。</p>
+                        <h4 class="danger-text">先開電源，再噴酒精</h4>
+                        <p>⚠️ 必須先開機才能噴酒精。未通電直接噴，酒精會漏進底座損壞馬達，不在保固範圍內。</p>
                     </div>
                 </div>
 
                 <div class="step-card">
                     <div class="step-icon-badge">💦</div>
                     <div class="step-content">
-                        <h4>步驟 3：溫柔噴洗噴芯</h4>
-                        <p>確認機器運轉中後，使用酒精噴霧對著瓶內的「噴芯」輕噴幾下。<br>※ 噴芯非常精細脆弱，請溫柔操作，切勿太大力觸碰。</p>
+                        <h4>噴酒精沖洗噴芯</h4>
+                        <p>機器運轉中，用酒精對瓶內噴芯輕噴幾下。噴芯脆弱，請輕柔操作。</p>
                     </div>
                 </div>
 
                 <div class="step-card">
                     <div class="step-icon-badge">⬆️</div>
                     <div class="step-content">
-                        <h4>步驟 4：垂直拔起倒除</h4>
-                        <p>雙手將玻璃瓶<strong>「垂直」</strong>向上拔起，將剛剛清洗用的殘餘酒精倒掉。</p>
+                        <h4>垂直拔起，倒掉酒精</h4>
+                        <p>雙手垂直向上拔起玻璃瓶，將殘餘酒精倒掉。</p>
                     </div>
                 </div>
 
                 <div class="step-card">
                     <div class="step-icon-badge">🌬️</div>
                     <div class="step-content">
-                        <h4>步驟 5：空轉揮發</h4>
-                        <p>將玻璃瓶垂直插回底座，讓機器空轉幾分鐘。待玻璃瓶內的殘餘酒精完全揮發乾燥後，就可以滴入全新的精油囉！</p>
+                        <h4>插回空轉，等待揮發</h4>
+                        <p>將玻璃瓶插回底座空轉幾分鐘，酒精完全揮發後即可滴入新精油。</p>
                     </div>
                 </div>
 
