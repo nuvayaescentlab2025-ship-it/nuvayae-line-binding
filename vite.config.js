@@ -11,6 +11,7 @@ export default defineConfig({
         advisor:      resolve(__dirname, 'fragrance-advisor.html'),
         firstUse:     resolve(__dirname, 'tutorial-first-use.html'),
         cleaning:     resolve(__dirname, 'tutorial-cleaning.html'),
+        changeScent:  resolve(__dirname, 'tutorial-change-scent.html'),
       }
     }
   }
