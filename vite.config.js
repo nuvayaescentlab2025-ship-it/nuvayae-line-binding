@@ -12,6 +12,7 @@ export default defineConfig({
         firstUse:     resolve(__dirname, 'tutorial-first-use.html'),
         cleaning:     resolve(__dirname, 'tutorial-cleaning.html'),
         changeScent:  resolve(__dirname, 'tutorial-change-scent.html'),
+        troubleshoot: resolve(__dirname, 'tutorial-troubleshoot.html'),
       }
     }
   }

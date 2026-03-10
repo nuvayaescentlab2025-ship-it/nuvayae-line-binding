@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>煖意 ‧ 故障自我排查</title>
+    <style>
+        :root {
+            --bg-light: #F9F7F3;
+            --card-bg: #FFFFFF;
+            --text-main: #4A4238;
+            --text-sub: #8C8273;
+            --gold-main: #CFA972;
+            --gold-light: #EBE1D1;
+            --shadow: 0 4px 12px rgba(74, 66, 56, 0.05);
+            --border-soft: #F0EBE1;
+            --ig-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            --danger-red: #D9534F;
+            --safe-green: #5CB85C;
+        }
+
+        body {
+            margin: 0; padding: 20px; background-color: #EAE6DF;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-main); display: flex; justify-content: center;
+        }
+
+        .app-container {
+            width: 100%; max-width: 400px; background-color: var(--bg-light);
+            min-height: 100vh; padding: 0 0 48px 0; box-sizing: border-box;
+            position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            border-radius: 24px; overflow: hidden;
+        }
+
+        /* 導覽列 */
+        .nav-bar {
+            display: flex; align-items: center; padding: 20px;
+            background-color: rgba(249, 247, 243, 0.95); backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--border-soft);
+        }
+        .back-btn {
+            font-size: 16px; color: var(--gold-main); text-decoration: none;
+            margin-right: 16px; display: flex; align-items: center; justify-content: center;
+            width: 28px; height: 28px; border-radius: 50%; background: #FFF;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; flex-shrink: 0;
+        }
+        .page-title { font-size: 15px; font-weight: 500; color: var(--text-main); margin: 0; letter-spacing: 1px; }
+
+        /* Hero */
+        .hero-section { padding: 24px 20px 16px 20px; text-align: center; }
+        .hero-section h2 { font-size: 20px; color: var(--gold-main); margin: 0 0 6px 0; font-weight: 500; letter-spacing: 1px; }
+        .hero-section p { font-size: 12px; color: var(--text-sub); margin: 0; line-height: 1.5; }
+
+        /* 區塊共用 */
+        .section { padding: 0 20px; margin-bottom: 28px; }
+        .section-label {
+            font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+            color: var(--gold-main); margin-bottom: 12px;
+        }
+
+        /* 步驟卡片 */
+        .step-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+        .step-card {
+            background: var(--card-bg); border: 1px solid var(--border-soft);
+            border-radius: 12px; padding: 14px 16px; box-shadow: var(--shadow);
+            display: flex; gap: 14px; align-items: center;
+        }
+        .step-number {
+            font-size: 14px; font-weight: bold; color: #FFF; background: var(--gold-main);
+            width: 24px; height: 24px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .step-content h4 { margin: 0 0 4px 0; font-size: 13px; color: var(--text-main); font-weight: 600; }
+        .step-content p { margin: 0; font-size: 12px; color: var(--text-sub); line-height: 1.5; }
+
+        /* 診斷結果卡片 (A/B 分流) */
+        .result-grid { display: flex; flex-direction: column; gap: 16px; }
+        .result-card {
+            border-radius: 12px; padding: 16px; position: relative;
+            background: var(--card-bg); box-shadow: var(--shadow); border: 1px solid var(--border-soft);
+        }
+        
+        /* 綠色結果：玻璃阻塞 */
+        .result-card.type-glass { border-top: 4px solid var(--safe-green); }
+        .result-card.type-glass .r-icon { color: var(--safe-green); }
+        
+        /* 紅色結果：馬達損壞 */
+        .result-card.type-motor { border-top: 4px solid var(--danger-red); }
+        .result-card.type-motor .r-icon { color: var(--danger-red); }
+
+        .result-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .result-header h3 { margin: 0; font-size: 15px; color: var(--text-main); }
+        .r-icon { font-size: 20px; }
+        
+        .result-desc { font-size: 12px; color: var(--text-sub); line-height: 1.6; margin-bottom: 16px; }
+        .result-desc strong { color: var(--text-main); }
+
+        /* 動作按鈕 */
+        .action-btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            text-decoration: none; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600;
+            transition: opacity 0.2s; text-align: center; width: 100%; box-sizing: border-box;
+        }
+        .btn-clean { background: var(--gold-light); color: var(--text-main); }
+        .btn-repair { background: #00B900; color: #FFF; box-shadow: 0 4px 10px rgba(0,185,0,0.2); }
+        .action-btn:active { opacity: 0.8; }
+
+    </style>
+</head>
+<body>
+    <div class="app-container">
+
+        <div class="nav-bar">
+            <a class="back-btn" id="backBtn">❮</a>
+            <h1 class="page-title">故障自我排查</h1>
+        </div>
+
+        <div class="hero-section">
+            <h2>擴香儀急救站</h2>
+            <p>不出霧了？不啟動了？<br>跟著 3 個步驟，輕鬆找出原因</p>
+        </div>
+
+        <div class="section">
+            <div class="section-label">第一階段：底座風壓測試</div>
+            
+            <div class="step-list">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>拔除玻璃瓶</h4>
+                        <p>請先將上方擴香玻璃瓶垂直拔起放妥。</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>開啟電源</h4>
+                        <p>插上電源線，並旋轉開啟擴香底座開關。</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>感受風壓或聲音</h4>
+                        <p>將手指抵住底座中間孔洞（插玻璃瓶的洞），感覺<strong>是否有風壓吹出</strong>，並聽看看<strong>是否有馬達運作聲</strong>。<br>※ 您也可以將附贈的「測試儀器」插入孔洞，若裡面的小球有上升，代表底座有風壓。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-label">第二階段：診斷結果與對策</div>
+            
+            <div class="result-grid">
+                
+                <div class="result-card type-glass">
+                    <div class="result-header">
+                        <span class="r-icon">💨</span>
+                        <h3>狀況 A：有感覺到風壓 / 有運作聲</h3>
+                    </div>
+                    <div class="result-desc">
+                        代表您的木座與馬達<strong>完全正常</strong>！<br>90% 以上是因為玻璃瓶內的「噴芯」被精油堵塞了。只要進行一次深層清潔，就能恢復如新。
+                    </div>
+                    <a href="tutorial-cleaning.html" class="action-btn btn-clean">
+                        <span>🧴</span> 前往查閱「清潔保養教學」
+                    </a>
+                </div>
+
+                <div class="result-card type-motor">
+                    <div class="result-header">
+                        <span class="r-icon">🤫</span>
+                        <h3>狀況 B：完全沒風壓 / 無運作聲</h3>
+                    </div>
+                    <div class="result-desc">
+                        若確認電源有插緊，但底座仍無反應，代表底座內的高壓氣泵（馬達）壽命已盡，需要更換機身。請放心，我們為訂閱會員提供完善保固。
+                    </div>
+                    <a href="https://line.me/R/ti/p/@349nwwah" class="action-btn btn-repair">
+                        <span>💬</span> 聯繫 LINE 客服申請維修更換
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.getElementById('backBtn').addEventListener('click', () => history.back());
+    </script>
+</body>
+</html>
