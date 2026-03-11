@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>煖意專屬選香師｜Honoka</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@200;300;400&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-light: #F9F7F3;
             --card-bg: #FFFFFF;
             --text-main: #4A4238;
             --text-sub: #8C8273;
-            --gold-main: #be9f74;
+            --gold-main: #CFA972;
             --gold-light: #EBE1D1;
             --pink-light: #FCE8E6;
             --pink-main: #D1A3A4;
@@ -23,25 +22,20 @@
         * { box-sizing: border-box; }
 
         body {
-            margin: 0; padding: 0;
+            margin: 0; padding: 20px;
             background-color: #EAE6DF;
-            font-family: 'Noto Serif TC', 'PingFang TC', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             color: var(--text-main);
             display: flex; justify-content: center;
-            height: 100vh; height: 100dvh;
+            height: 100vh;
         }
 
         .app-container {
-            width: 100%; max-width: 440px; background-color: var(--bg-light);
+            width: 100%; max-width: 400px; background-color: var(--bg-light);
             display: flex; flex-direction: column;
             position: relative;
             box-shadow: 0 30px 60px rgba(0,0,0,0.12);
-            overflow: hidden;
-        }
-
-        @media (min-width: 480px) {
-            body { padding: 20px; }
-            .app-container { border-radius: 32px; height: calc(100vh - 40px); }
+            border-radius: 32px; overflow: hidden;
         }
 
         .ambient-bg {
@@ -54,19 +48,18 @@
 
         /* 頂部導覽列 */
         .nav-bar {
-            display: flex; align-items: center; padding: 20px 16px 14px;
+            display: flex; align-items: center; padding: 24px 20px 16px;
             background-color: rgba(249, 247, 243, 0.85); backdrop-filter: blur(12px);
             z-index: 10; border-bottom: 1px solid rgba(240, 235, 225, 0.5);
-            gap: 12px;
         }
         .back-btn {
-            font-size: 14px; color: var(--gold-main); text-decoration: none;
+            font-size: 16px; color: var(--gold-main); text-decoration: none;
             display: flex; align-items: center; justify-content: center;
             width: 32px; height: 32px; border-radius: 50%;
             background: #FFF; box-shadow: var(--shadow-soft);
-            border: none; cursor: pointer;
+            border: none; cursor: pointer; margin-right: 16px;
         }
-        .page-title { font-size: 14px; font-weight: 400; color: var(--text-main); margin: 0; letter-spacing: 2px; flex: 1; }
+        .page-title { font-size: 15px; font-weight: 500; color: var(--text-main); margin: 0; letter-spacing: 2px; flex: 1; }
 
         /* 進度指示 */
         .progress-bar-wrap {
@@ -81,48 +74,48 @@
         }
         .slot-dot {
             width: 8px; height: 8px; border-radius: 50%;
-            border: 1.5px solid rgba(190,159,116,0.35);
+            border: 1.5px solid rgba(207,169,114,0.35);
             background: transparent; transition: all 0.3s;
         }
         .slot-dot.filled {
             background: var(--gold-main); border-color: var(--gold-main);
-            box-shadow: 0 0 4px rgba(190,159,116,0.4);
+            box-shadow: 0 0 4px rgba(207,169,114,0.4);
         }
 
         /* 對話滾動區域 */
         .scroll-area {
-            flex: 1; overflow-y: auto; padding: 20px 16px;
+            flex: 1; overflow-y: auto; padding: 20px;
             scroll-behavior: smooth; position: relative; z-index: 2;
         }
         .scroll-area::-webkit-scrollbar { width: 0; }
 
-        .hero-section { text-align: center; margin-bottom: 24px; padding-top: 4px; }
-        .hero-section h2 { font-size: 17px; color: var(--gold-main); margin: 0 0 6px; font-weight: 400; letter-spacing: 1.5px; }
-        .hero-section p { font-size: 11px; color: var(--text-sub); margin: 0; line-height: 1.6; letter-spacing: 0.5px; }
+        .hero-section { text-align: center; margin-bottom: 32px; padding-top: 8px; }
+        .hero-section h2 { font-size: 18px; color: var(--gold-main); margin: 0 0 8px; font-weight: 500; letter-spacing: 1.5px; }
+        .hero-section p { font-size: 12px; color: var(--text-sub); margin: 0; line-height: 1.6; letter-spacing: 0.5px; }
 
         @keyframes floatIn {
             from { opacity: 0; transform: translateY(18px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .chat-container { display: flex; flex-direction: column; gap: 20px; }
+        .chat-container { display: flex; flex-direction: column; gap: 28px; }
 
         .chat-row {
             display: flex; flex-direction: column; width: 100%;
-            animation: floatIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation: floatIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
         .chat-row.agent { align-items: flex-start; }
         .chat-row.user { align-items: flex-end; }
 
         .step-title {
-            display: flex; align-items: center; gap: 6px;
-            font-size: 10px; font-weight: 400; margin-bottom: 6px;
-            letter-spacing: 0.8px;
+            display: flex; align-items: center; gap: 8px;
+            font-size: 11px; font-weight: 500; margin-bottom: 8px;
+            letter-spacing: 0.8px; text-transform: uppercase;
         }
         .chat-row.agent .step-title { color: var(--pink-main); }
         .chat-row.user .step-title { color: var(--gold-main); flex-direction: row-reverse; }
 
-        .title-dot { width: 5px; height: 5px; border-radius: 50%; }
+        .title-dot { width: 6px; height: 6px; border-radius: 50%; }
         .chat-row.agent .title-dot { background-color: var(--pink-light); }
         .chat-row.user .title-dot { background-color: var(--gold-light); }
 
@@ -131,28 +124,33 @@
             background-color: var(--card-bg); border-radius: 12px;
             box-shadow: var(--shadow-soft);
             position: relative; overflow: hidden;
-            max-width: 88%; border: 1px solid rgba(240, 235, 225, 0.4);
+            display: flex; flex-direction: column; gap: 8px;
+            max-width: 85%; border: 1px solid rgba(240, 235, 225, 0.4);
         }
 
-        .scent-color-bar { position: absolute; top: 0; bottom: 0; width: 3px; }
+        .scent-color-bar { position: absolute; top: 0; bottom: 0; width: 4px; }
         .bar-agent { right: 0; background-color: var(--pink-light); }
         .bar-user { left: 0; background-color: var(--gold-light); }
 
-        .agent-card { padding: 14px 18px 14px 14px; }
-        .user-card { padding: 14px 14px 14px 18px; }
+        .agent-card { padding: 16px 20px 16px 16px; }
+        .user-card { padding: 16px 16px 16px 20px; }
+
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
+        .memory-card h4 { margin: 0; font-size: 15px; color: var(--text-main); font-weight: 500; letter-spacing: 0.5px; }
+        .advisor-tag { font-size: 10px; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--pink-light); color: var(--pink-main); background-color: #FFF; }
 
         .memory-card p {
             margin: 0; font-size: 13px; color: var(--text-sub);
-            line-height: 1.75; white-space: pre-wrap;
+            line-height: 1.7; white-space: pre-wrap;
         }
 
         /* 快速選項按鈕 */
-        .options-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .options-group { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
         .option-btn {
             background: var(--bg-light); border: none;
-            color: var(--text-main); padding: 8px 14px; border-radius: 10px;
+            color: var(--text-main); padding: 10px 16px; border-radius: 12px;
             font-size: 12px; cursor: pointer; transition: all 0.3s ease;
-            box-shadow: 3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light);
+            box-shadow: 4px 4px 10px var(--neu-shadow-dark), -4px -4px 10px var(--neu-shadow-light);
             font-family: inherit; letter-spacing: 0.5px;
         }
         .option-btn:hover {
@@ -178,12 +176,12 @@
 
         /* 底部輸入區 */
         .input-area {
-            padding: 14px 16px 20px; background-color: var(--card-bg);
+            padding: 20px; background-color: var(--card-bg);
             border-top: 1px solid rgba(240, 235, 225, 0.5);
-            display: flex; gap: 10px; align-items: center; z-index: 10;
+            display: flex; gap: 12px; align-items: center; z-index: 10;
         }
         .input-area input {
-            flex: 1; padding: 12px 16px; border: none; border-radius: 14px;
+            flex: 1; padding: 14px 18px; border: none; border-radius: 15px;
             outline: none; font-size: 13px; color: var(--text-main);
             background: var(--bg-light); font-family: inherit;
             box-shadow: inset 2px 2px 5px var(--neu-shadow-dark), inset -2px -2px 5px var(--neu-shadow-light);
@@ -191,8 +189,8 @@
         .send-btn {
             background: var(--bg-light); border: none; cursor: pointer;
             color: var(--gold-main); display: flex; align-items: center; justify-content: center;
-            width: 42px; height: 42px; border-radius: 12px;
-            box-shadow: 3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light);
+            width: 44px; height: 44px; border-radius: 12px;
+            box-shadow: 4px 4px 10px var(--neu-shadow-dark), -4px -4px 10px var(--neu-shadow-light);
             transition: 0.3s; flex-shrink: 0;
         }
         .send-btn:hover { transform: translateY(-2px); color: var(--pink-main); }
