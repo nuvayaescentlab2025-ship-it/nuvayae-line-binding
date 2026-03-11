@@ -68,6 +68,8 @@ button:active { transform: scale(0.96); opacity: 0.9; }
 
 .link-group a:active { transform: scale(0.96); opacity: 0.9; }
 
+#diffuserBtn { background-color: #7a9e8e; }
+
 .loading { color: #be9f74; font-weight: bold; font-style: italic; }
 
 @keyframes fadeSlideIn {
