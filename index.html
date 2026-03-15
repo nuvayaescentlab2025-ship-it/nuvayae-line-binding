@@ -372,8 +372,8 @@
                     <div class="scent-reserved-name" id="reservedPerfumeName">—</div>
                     <div class="scent-reserved-divider"></div>
                     <p class="scent-reserved-note" id="scentDeadlineNote">本週日截止前，您皆可自由探索並隨時替換</p>
-                    <p class="scent-reserved-detail"><span>📦</span><span>您的香氛包裹預計於本週三寄出。</span></p>
-                    <p class="scent-reserved-detail"><span>🔒</span><span>下月選香通道，將於您收到貨後開啟。</span></p>
+                    <p class="scent-reserved-detail"><span>📦</span><span id="shipDateNote">您的香氛包裹預計於本週三寄出。</span></p>
+                    <p class="scent-reserved-detail"><span>🔒</span><span id="nextScentChannelNote">下月選香通道，收到貨後開啟。</span></p>
                 </div>
                 <div class="scent-section-label">本月選香</div>
                 <div class="scent-carousel">
@@ -598,11 +598,49 @@
             if (reservedEl && perfumeName) reservedEl.textContent = perfumeName;
         }
 
+        // 從 nextOrderDate 字串解析出「日」數字
+        // 支援格式：「4月15日」、「2026/4/15」、「2026-04-15」
+        function parseSubscriptionDay(nextOrderDate) {
+            if (!nextOrderDate) return null;
+            const m1 = nextOrderDate.match(/\d+月(\d+)日/);
+            if (m1) return parseInt(m1[1]);
+            const m2 = nextOrderDate.match(/\d{4}[\/\-]\d{1,2}[\/\-](\d{1,2})/);
+            if (m2) return parseInt(m2[1]);
+            return null;
+        }
+
+        // 找當月「>= subscriptionDay 的第一個週三」
+        function firstWednesdayOnOrAfterDay(subscriptionDay) {
+            const now = new Date();
+            const d = new Date(now.getFullYear(), now.getMonth(), subscriptionDay);
+            // 若日期超出當月末（如2月30日），Date 會自動進入下月，視為無效
+            if (d.getMonth() !== now.getMonth()) return null;
+            const daysUntilWed = (3 - d.getDay() + 7) % 7; // 週三=3
+            d.setDate(d.getDate() + daysUntilWed);
+            return d;
+        }
+
         function applyLockState(locked, nextOrderDate) {
             isLocked = locked;
             const lockNotice = document.getElementById('scentLockNotice');
             const lockNoticeText = document.getElementById('scentLockNoticeText');
             const buttons = document.querySelectorAll('.scent-card-btn');
+            const nextScentChannelNote = document.getElementById('nextScentChannelNote');
+            const shipDateNote = document.getElementById('shipDateNote');
+
+            if (nextScentChannelNote && nextOrderDate) {
+                nextScentChannelNote.textContent = `下月選香通道，將於 ${nextOrderDate} 開啟。`;
+            }
+
+            const subDay = parseSubscriptionDay(nextOrderDate);
+            if (shipDateNote && subDay) {
+                const wed = firstWednesdayOnOrAfterDay(subDay);
+                if (wed) {
+                    const m = wed.getMonth() + 1;
+                    const d = wed.getDate();
+                    shipDateNote.textContent = `您的香氛包裹預計於 ${m} 月 ${d} 日（週三）寄出。`;
+                }
+            }
 
             if (locked) {
                 buttons.forEach(btn => { btn.disabled = true; });
