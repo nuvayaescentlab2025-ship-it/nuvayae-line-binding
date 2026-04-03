@@ -67,6 +67,10 @@ SweetAlert2 is loaded via CDN for dialogs. LIFF SDK is also imported from CDN as
 
 文件應與程式碼保持一致，不可僅更新程式碼而遺漏文件更新。
 
+## 安全規範
+
+**嚴禁將 `.env` 檔案提交至 git。** 任何包含真實金鑰或密碼的 `.env` 檔案絕對不可出現在 commit 或 push 中。僅允許提交 `.env.example`（不含真實值）。
+
 ## 工作流程
 1.**git**: 記錄在 claude-flow/git-flow.md 檔案
 2.**規劃流程**: 若使用者需要規畫需求時，規劃後須寫成規劃文件寫到plans目錄下儲存成md檔案
