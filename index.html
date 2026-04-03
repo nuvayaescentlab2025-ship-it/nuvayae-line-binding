@@ -447,7 +447,7 @@
     <script type="module">
         import liff from "https://cdn.jsdelivr.net/npm/@line/liff@2.23.2/+esm";
 
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyAkj2_bqp6v0mnIJWhTNRQ-OMf4zLaZgYEUXSj0MbA9fCU_hMBehiLJBOxouzH7T-wSQ/exec';
+        const API_URL = 'https://kvqkjtyhbbcivwlexgcn.supabase.co/functions/v1/member';
 
         let lineUserId = null;
         let isLocked = false;
@@ -475,7 +475,7 @@
                 lineUserId = userId;
                 
                 // 這裡發送 GET 請求給 GAS
-                const response = await fetch(`${API_URL}?userid=${userId}`);
+                const response = await fetch(`${API_URL}?action=check_bound&userid=${userId}`);
                 const result = await response.json();
 
                 if (result.isBound) {
@@ -543,21 +543,23 @@
             statusMsg.innerText = "正在驗證資訊...";
 
             const profile = await liff.getProfile();
-            const formData = new URLSearchParams();
-            formData.append('orderId', orderId);
-            formData.append('mobile', mobile);
-            formData.append('userid', profile.userId);
-            formData.append('displayName', profile.displayName);
-            formData.append('pictureUrl', profile.pictureUrl);
 
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    body: formData
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'bind',
+                        orderId: orderId,
+                        phone: mobile,
+                        lineUid: profile.userId,
+                        lineDisplayName: profile.displayName,
+                        linePictureUrl: profile.pictureUrl
+                    })
                 });
                 const result = await response.json();
 
-                if (result.status === 200) {
+                if (response.status === 201) {
                     Swal.fire({
                         title: '成功！',
                         text: '訂單綁定成功',
@@ -747,13 +749,6 @@
                     // 取得使用者 profile
                     const profile = await liff.getProfile();
 
-                    // 準備 API 請求
-                    const formData = new URLSearchParams();
-                    formData.append('action', 'select_perfume');
-                    formData.append('userid', profile.userId);
-                    formData.append('perfumeName', perfumeName);
-                    formData.append('displayName', profile.displayName);
-
                     // 禁用按鈕並顯示載入狀態
                     btn.disabled = true;
                     const originalText = btn.textContent;
@@ -762,11 +757,17 @@
                     try {
                         const response = await fetch(API_URL, {
                             method: 'POST',
-                            body: formData
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                action: 'select_perfume',
+                                lineUid: profile.userId,
+                                scentName: perfumeName,
+                                displayName: profile.displayName
+                            })
                         });
                         const result = await response.json();
 
-                        if (result.status === 200) {
+                        if (response.ok) {
                             // 成功：更新 UI
                             buttons.forEach(b => {
                                 b.classList.remove('selected');
