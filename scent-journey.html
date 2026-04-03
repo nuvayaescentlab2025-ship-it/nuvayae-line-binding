@@ -119,7 +119,7 @@
     </div>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyAkj2_bqp6v0mnIJWhTNRQ-OMf4zLaZgYEUXSj0MbA9fCU_hMBehiLJBOxouzH7T-wSQ/exec';
+        const API_URL = 'https://kvqkjtyhbbcivwlexgcn.supabase.co/functions/v1/member';
 
         const SCENT_STYLES = {
             '夜和': { barColor: '#D6CADD', desc: '寧靜草本木質調。化作一條鬆軟的無形毛毯，溫柔包裹住生活的疲憊，給予月色般的擁抱。' },
@@ -135,21 +135,10 @@
             12: { icon: '❄️', label: '冬季專屬禮贈', desc: '歲末的珍貴，以心意為您包裝。',       barColor: '#C5D5E8' },
         };
 
-        // ── Mock 資料（工程師串接前的設計稿預覽） ──
-        // 格式與後端 history 陣列相同，串接後直接替換
-        const MOCK_HISTORY = [
-            { year: 2026, month: 3, monthIndex: 3, perfumeName: '朝光', isCurrent: true  },
-            { year: 2026, month: 2, monthIndex: 2, perfumeName: '夜和', isCurrent: false },
-            { year: 2026, month: 1, monthIndex: 1, perfumeName: '暖居', isCurrent: false },
-        ];
-
         document.getElementById('backBtn').addEventListener('click', () => history.back());
 
         function buildItems(result) {
-            // 後端串接後：回傳 history 陣列即自動切換為真實資料
-            if (Array.isArray(result.history) && result.history.length) return result.history;
-            // 尚未串接：顯示 mock 設計稿
-            return MOCK_HISTORY;
+            return result.history || [];
         }
 
         function renderItem(item) {
@@ -214,7 +203,7 @@
             }
 
             try {
-                const res    = await fetch(`${API_URL}?userid=${encodeURIComponent(userId)}`);
+                const res    = await fetch(`${API_URL}?action=check_bound&userid=${encodeURIComponent(userId)}`);
                 const result = await res.json();
 
                 if (!result.isBound) {
@@ -223,6 +212,10 @@
                 }
 
                 const items = buildItems(result);
+                if (!items.length) {
+                    timeline.innerHTML = '<p class="status-msg">尚無選香記錄。</p>';
+                    return;
+                }
                 timeline.innerHTML = items.map(renderItem).join('');
                 document.getElementById('endMark').style.display = 'block';
             } catch (e) {
