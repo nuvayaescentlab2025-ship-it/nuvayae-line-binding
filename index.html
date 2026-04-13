@@ -521,7 +521,7 @@
                     const pastDeadline = result.deadline
                         ? new Date() > new Date(result.deadline + 'T23:59:59+08:00')
                         : false;
-                    applyLockState(result.isLocked === true || pastDeadline || isFirstMonth, result.nextOrderDate || '');
+                    applyLockState(result.isLocked === true || pastDeadline || isFirstMonth, result.nextOrderDate || '', result.order_created_at || '');
 
                     document.getElementById('loadingView').classList.add('hidden');
                     document.getElementById('userName').innerText = `你好，${profile.displayName}！`;
@@ -637,7 +637,7 @@
             return d;
         }
 
-        function applyLockState(locked, nextOrderDate) {
+        function applyLockState(locked, nextOrderDate, orderCreatedAt) {
             isLocked = locked;
             const lockNotice = document.getElementById('scentLockNotice');
             const lockNoticeText = document.getElementById('scentLockNoticeText');
@@ -645,8 +645,9 @@
             const nextScentChannelNote = document.getElementById('nextScentChannelNote');
             const shipDateNote = document.getElementById('shipDateNote');
 
-            const subDate = parseSubscriptionDate(nextOrderDate);
-            const wed = subDate ? firstWednesdayOnOrAfter(subDate) : null;
+            // 當期出貨日：從 order_created_at 算起的第一個週三
+            const orderDate = orderCreatedAt ? new Date(orderCreatedAt) : null;
+            const wed = orderDate ? firstWednesdayOnOrAfter(orderDate) : null;
 
             if (wed) {
                 const wm = wed.getMonth() + 1;
@@ -654,21 +655,21 @@
                 if (shipDateNote) {
                     shipDateNote.textContent = `您的香氛包裹預計於 ${wm} 月 ${wd} 日（週三）寄出。`;
                 }
+            }
 
-                // 下次選香開放 = 出貨日隔天（週四）
-                const thu = new Date(wed);
+            // 下次選香開放 = 下次續訂日後第一個週三的隔天（週四）
+            const nextSubDate = parseSubscriptionDate(nextOrderDate);
+            const nextWed = nextSubDate ? firstWednesdayOnOrAfter(nextSubDate) : null;
+            if (nextWed && nextScentChannelNote) {
+                const thu = new Date(nextWed);
                 thu.setDate(thu.getDate() + 1);
-                const tm = thu.getMonth() + 1;
-                const td = thu.getDate();
-                if (nextScentChannelNote) {
-                    nextScentChannelNote.textContent = `下月選香通道，將於 ${tm} 月 ${td} 日開啟。`;
-                }
+                nextScentChannelNote.textContent = `下月選香通道，將於 ${thu.getMonth()+1} 月 ${thu.getDate()} 日開啟。`;
             }
 
             if (locked) {
                 buttons.forEach(btn => { btn.disabled = true; });
                 if (lockNotice && lockNoticeText) {
-                    const openDate = wed ? (() => { const t = new Date(wed); t.setDate(t.getDate() + 1); return `${t.getMonth()+1} 月 ${t.getDate()} 日`; })() : nextOrderDate;
+                    const openDate = nextWed ? (() => { const t = new Date(nextWed); t.setDate(t.getDate() + 1); return `${t.getMonth()+1} 月 ${t.getDate()} 日`; })() : nextOrderDate;
                     lockNoticeText.textContent = `系統出貨準備中，已過選香截止日。下期選香將於 ${openDate} 開放。`;
                     lockNotice.classList.remove('hidden');
                 }
