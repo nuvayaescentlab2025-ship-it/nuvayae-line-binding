@@ -642,24 +642,31 @@
             const nextScentChannelNote = document.getElementById('nextScentChannelNote');
             const shipDateNote = document.getElementById('shipDateNote');
 
-            if (nextScentChannelNote && nextOrderDate) {
-                nextScentChannelNote.textContent = `下月選香通道，將於 ${nextOrderDate} 開啟。`;
-            }
-
             const subDate = parseSubscriptionDate(nextOrderDate);
-            if (shipDateNote && subDate) {
-                const wed = firstWednesdayOnOrAfter(subDate);
-                if (wed) {
-                    const m = wed.getMonth() + 1;
-                    const d = wed.getDate();
-                    shipDateNote.textContent = `您的香氛包裹預計於 ${m} 月 ${d} 日（週三）寄出。`;
+            const wed = subDate ? firstWednesdayOnOrAfter(subDate) : null;
+
+            if (wed) {
+                const wm = wed.getMonth() + 1;
+                const wd = wed.getDate();
+                if (shipDateNote) {
+                    shipDateNote.textContent = `您的香氛包裹預計於 ${wm} 月 ${wd} 日（週三）寄出。`;
+                }
+
+                // 下次選香開放 = 出貨日隔天（週四）
+                const thu = new Date(wed);
+                thu.setDate(thu.getDate() + 1);
+                const tm = thu.getMonth() + 1;
+                const td = thu.getDate();
+                if (nextScentChannelNote) {
+                    nextScentChannelNote.textContent = `下月選香通道，將於 ${tm} 月 ${td} 日開啟。`;
                 }
             }
 
             if (locked) {
                 buttons.forEach(btn => { btn.disabled = true; });
                 if (lockNotice && lockNoticeText) {
-                    lockNoticeText.textContent = `系統出貨準備中，已過選香截止日。下期選香將於 ${nextOrderDate} 後開放。`;
+                    const openDate = wed ? (() => { const t = new Date(wed); t.setDate(t.getDate() + 1); return `${t.getMonth()+1} 月 ${t.getDate()} 日`; })() : nextOrderDate;
+                    lockNoticeText.textContent = `系統出貨準備中，已過選香截止日。下期選香將於 ${openDate} 開放。`;
                     lockNotice.classList.remove('hidden');
                 }
             } else {
