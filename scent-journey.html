@@ -146,7 +146,8 @@
             const { year, month, monthIndex, perfumeName, isCurrent } = item;
             const dateLabel = `${year}.${String(month).padStart(2, '0')}`;
             const season = SEASON_GIFTS[month];
-            const style  = perfumeName ? SCENT_STYLES[perfumeName] : null;
+            const scentKey = perfumeName ? (Object.keys(SCENT_STYLES).find(k => perfumeName === k || perfumeName.startsWith(k)) || perfumeName) : null;
+            const style  = scentKey ? SCENT_STYLES[scentKey] : null;
             const dotClass = isCurrent ? 'timeline-dot active' : 'timeline-dot';
 
             let html = `

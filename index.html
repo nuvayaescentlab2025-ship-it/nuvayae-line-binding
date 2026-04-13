@@ -750,7 +750,7 @@
 
                     // 取得香水名稱（從卡片的 .scent-card-name 中的第一行文字）
                     const card = btn.closest('.scent-card');
-                    const perfumeName = card.querySelector('.scent-card-name').textContent.trim().split('\n')[0];
+                    const perfumeName = card.querySelector('.scent-card-name').childNodes[0].nodeValue.trim();
 
                     // 取得使用者 profile
                     const profile = await liff.getProfile();
