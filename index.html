@@ -515,7 +515,10 @@
                         const deadlineEl = document.getElementById('scentDeadlineNote');
                         if (deadlineEl) deadlineEl.textContent = `本期選香截止日為：${result.deadline}`;
                     }
-                    applyLockState(result.isLocked === true, result.nextOrderDate || '');
+                    const pastDeadline = result.deadline
+                        ? new Date() > new Date(result.deadline + 'T23:59:59+08:00')
+                        : false;
+                    applyLockState(result.isLocked === true || pastDeadline, result.nextOrderDate || '');
 
                     document.getElementById('loadingView').classList.add('hidden');
                     document.getElementById('userName').innerText = `你好，${profile.displayName}！`;
