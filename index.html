@@ -609,23 +609,26 @@
             if (reservedEl && perfumeName) reservedEl.textContent = perfumeName;
         }
 
-        // 從 nextOrderDate 字串解析出「日」數字
-        // 支援格式：「4月15日」、「2026/4/15」、「2026-04-15」
-        function parseSubscriptionDay(nextOrderDate) {
+        // 從 nextOrderDate 字串解析為 Date 物件，保留完整年月日
+        // 支援格式：「4月15日」（補當年）、「2026/4/15」、「2026-04-15」
+        function parseSubscriptionDate(nextOrderDate) {
             if (!nextOrderDate) return null;
-            const m1 = nextOrderDate.match(/\d+月(\d+)日/);
-            if (m1) return parseInt(m1[1]);
-            const m2 = nextOrderDate.match(/\d{4}[\/\-]\d{1,2}[\/\-](\d{1,2})/);
-            if (m2) return parseInt(m2[1]);
+            const now = new Date();
+            const m1 = nextOrderDate.match(/(\d+)月(\d+)日/);
+            if (m1) {
+                const month = parseInt(m1[1]) - 1;
+                const day   = parseInt(m1[2]);
+                return new Date(now.getFullYear(), month, day);
+            }
+            const m2 = nextOrderDate.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+            if (m2) return new Date(parseInt(m2[1]), parseInt(m2[2]) - 1, parseInt(m2[3]));
             return null;
         }
 
-        // 找當月「>= subscriptionDay 的第一個週三」
-        function firstWednesdayOnOrAfterDay(subscriptionDay) {
-            const now = new Date();
-            const d = new Date(now.getFullYear(), now.getMonth(), subscriptionDay);
-            // 若日期超出當月末（如2月30日），Date 會自動進入下月，視為無效
-            if (d.getMonth() !== now.getMonth()) return null;
+        // 找「>= startDate 的第一個週三」
+        function firstWednesdayOnOrAfter(startDate) {
+            if (!startDate) return null;
+            const d = new Date(startDate);
             const daysUntilWed = (3 - d.getDay() + 7) % 7; // 週三=3
             d.setDate(d.getDate() + daysUntilWed);
             return d;
@@ -643,9 +646,9 @@
                 nextScentChannelNote.textContent = `下月選香通道，將於 ${nextOrderDate} 開啟。`;
             }
 
-            const subDay = parseSubscriptionDay(nextOrderDate);
-            if (shipDateNote && subDay) {
-                const wed = firstWednesdayOnOrAfterDay(subDay);
+            const subDate = parseSubscriptionDate(nextOrderDate);
+            if (shipDateNote && subDate) {
+                const wed = firstWednesdayOnOrAfter(subDate);
                 if (wed) {
                     const m = wed.getMonth() + 1;
                     const d = wed.getDate();
