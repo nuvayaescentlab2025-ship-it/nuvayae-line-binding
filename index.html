@@ -518,10 +518,7 @@
                     } else if (result.deadline) {
                         if (deadlineEl) deadlineEl.textContent = `本期選香截止日為：${result.deadline}`;
                     }
-                    const pastDeadline = result.deadline
-                        ? new Date() > new Date(result.deadline + 'T23:59:59+08:00')
-                        : false;
-                    applyLockState(result.isLocked === true || pastDeadline || isFirstMonth, result.nextOrderDate || '', result.order_created_at || '');
+                    applyLockState(result.isLocked === true, result.nextOrderDate || '', result.order_created_at || '');
 
                     document.getElementById('loadingView').classList.add('hidden');
                     document.getElementById('userName').innerText = `你好，${profile.displayName}！`;
