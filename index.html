@@ -511,14 +511,17 @@
                     }
 
                     // 截止日 & 鎖定狀態
-                    if (result.deadline) {
-                        const deadlineEl = document.getElementById('scentDeadlineNote');
+                    const isFirstMonth = result.months === 1;
+                    const deadlineEl = document.getElementById('scentDeadlineNote');
+                    if (isFirstMonth) {
+                        if (deadlineEl) deadlineEl.textContent = '您的首期香氣已於訂購時選定';
+                    } else if (result.deadline) {
                         if (deadlineEl) deadlineEl.textContent = `本期選香截止日為：${result.deadline}`;
                     }
                     const pastDeadline = result.deadline
                         ? new Date() > new Date(result.deadline + 'T23:59:59+08:00')
                         : false;
-                    applyLockState(result.isLocked === true || pastDeadline, result.nextOrderDate || '');
+                    applyLockState(result.isLocked === true || pastDeadline || isFirstMonth, result.nextOrderDate || '');
 
                     document.getElementById('loadingView').classList.add('hidden');
                     document.getElementById('userName').innerText = `你好，${profile.displayName}！`;
