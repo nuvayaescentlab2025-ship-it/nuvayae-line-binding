@@ -749,7 +749,16 @@
                     e.preventDefault();
                     e.stopPropagation();
 
-                    if (isLocked) return;
+                    if (isLocked) {
+                        Swal.fire({
+                            title: '選香已截止',
+                            text: '本期選香截止日已過，下期開放時即可重新選擇。',
+                            icon: 'info',
+                            confirmButtonText: '了解',
+                            confirmButtonColor: '#be9f74',
+                        });
+                        return;
+                    }
 
                     // 取得香水名稱（從卡片的 .scent-card-name 中的第一行文字）
                     const card = btn.closest('.scent-card');
