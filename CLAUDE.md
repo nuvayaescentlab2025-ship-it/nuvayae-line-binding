@@ -26,16 +26,17 @@ This is a single-page LINE LIFF (LINE Front-end Framework) app for the **煖意 
 ### App Flow
 
 1. **LIFF init** (`liff.init` with hardcoded `liffId`): if the user is not logged in, `liff.login()` is called immediately.
-2. **Status check** (`checkSubscriptionStatus`): sends `GET ?userid=<lineUserId>` to the Google Apps Script (GAS) backend. Response shape: `{ isBound: boolean, duration: string, months: number }`.
-   - If `isBound`: shows `#boundView` with a subscription progress card (out of 12 months).
+2. **Status check** (`checkSubscriptionStatus`): sends `GET {API_URL}?action=check_bound&userid=<lineUserId>` 到 Supabase Edge Function `member`。主要回應欄位（2026-05 後）：`{ isBound, duration, months, subType, currentPerfume, nextPerfume, currentPeriodNo, isLocked, t7Date, t8Date, nextChargeDate, history }`。完整規格見 `plans/11-API-變動-2026-05.md`，前端串接邏輯見 `plans/12-前端-API-變動-串接-2026-05.md`。
+   - If `isBound`: shows `#boundView` with subscription progress card + 選香區塊（`renderScentBlock` 依 `isLocked` / `currentPeriodNo` 切三種狀態：鎖定期 / 一般開放期 / 首期）。
    - If not bound: shows `#unboundView` with the binding form.
-3. **Form submission** (`submitForm`): sends `POST` with `orderId`, `mobile`, `userid`, `displayName`, `pictureUrl` to the same GAS endpoint. On success (status 200), reloads the page to re-run the status check.
+3. **Form submission** (`submitForm`): sends `POST` with `action: "bind"`, `orderId`, `phone`, `lineUid`, `lineDisplayName`, `linePictureUrl`。成功狀態為 HTTP 201，重整頁面再跑一次 `check_bound`。
+4. **Scent selection** (carousel click): sends `POST` with `action: "select_perfume"`, `lineUid`, `scentName`。回應 `appliedTo` 為 `"current"`（首期會員，寫入本期）或 `"next"`（一般情境，寫入下期）。
 
 ### Key Constants (hardcoded in `index.html`)
 
 | Constant | Value |
 |---|---|
-| `API_URL` | Google Apps Script deployment URL |
+| `API_URL` | `https://kvqkjtyhbbcivwlexgcn.supabase.co/functions/v1/member` |
 | LIFF ID | `2009177086-5AGq54Qb` |
 | Subscription total months | `12` |
 

@@ -456,7 +456,21 @@
         const API_URL = 'https://kvqkjtyhbbcivwlexgcn.supabase.co/functions/v1/member';
 
         let lineUserId = null;
-        let isLocked = false;
+        let isLockedGlobal = false;
+        let t8DateCached = '';
+
+        function setText(id, txt) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = txt;
+        }
+
+        // "2026-05-16" → "5 月 16 日"
+        function formatMd(isoDate) {
+            if (!isoDate) return '';
+            const parts = isoDate.split('-');
+            if (parts.length < 3) return isoDate;
+            return `${parseInt(parts[1])} 月 ${parseInt(parts[2])} 日`;
+        }
 
         async function initLiff() {
             try {
@@ -501,24 +515,15 @@
                         document.querySelector('.progress-card').classList.remove('hidden');
                     }
 
-                    // 根據 currentPerfume 更新選香區塊的 UI
-                    if (result.currentPerfume && result.currentPerfume !== '尚未選香') {
-                        updateScentSelection(result.currentPerfume);
-                    } else if (result.lastPerfume && result.lastPerfume !== '尚未選香') {
-                        // 本月尚未選香：以上月香氣作為預設顯示於「本月專屬保留」
-                        const reservedEl = document.getElementById('reservedPerfumeName');
-                        if (reservedEl) reservedEl.textContent = result.lastPerfume;
-                    }
-
-                    // 截止日 & 鎖定狀態
-                    const isFirstMonth = result.months === 1;
-                    const deadlineEl = document.getElementById('scentDeadlineNote');
-                    if (isFirstMonth) {
-                        if (deadlineEl) deadlineEl.textContent = '您的首期香氣已於訂購時選定';
-                    } else if (result.deadline) {
-                        if (deadlineEl) deadlineEl.textContent = `本期選香截止日為：${result.deadline}`;
-                    }
-                    applyLockState(result.isLocked === true, result.nextOrderDate || '', result.order_created_at || '');
+                    renderScentBlock({
+                        currentPerfume:  result.currentPerfume,
+                        nextPerfume:     result.nextPerfume,
+                        currentPeriodNo: result.currentPeriodNo,
+                        isLocked:        result.isLocked === true,
+                        t7Date:          result.t7Date,
+                        t8Date:          result.t8Date,
+                        nextChargeDate:  result.nextChargeDate,
+                    });
 
                     document.getElementById('loadingView').classList.add('hidden');
                     document.getElementById('userName').innerText = `你好，${profile.displayName}！`;
@@ -609,67 +614,51 @@
             if (reservedEl && perfumeName) reservedEl.textContent = perfumeName;
         }
 
-        // 從 nextOrderDate 字串解析為 Date 物件，保留完整年月日
-        // 支援格式：「4月15日」（補當年）、「2026/4/15」、「2026-04-15」
-        function parseSubscriptionDate(nextOrderDate) {
-            if (!nextOrderDate) return null;
-            const now = new Date();
-            const m1 = nextOrderDate.match(/(\d+)月(\d+)日/);
-            if (m1) {
-                const month = parseInt(m1[1]) - 1;
-                const day   = parseInt(m1[2]);
-                return new Date(now.getFullYear(), month, day);
+        function renderScentBlock({ currentPerfume, nextPerfume, currentPeriodNo, isLocked, t7Date, t8Date, nextChargeDate }) {
+            isLockedGlobal = isLocked;
+            t8DateCached = t8Date || '';
+            const isFirstPeriod = currentPeriodNo === 1;
+            const hasNextSelection = nextPerfume && nextPerfume !== '沿用本期';
+
+            // 「本月專屬保留」香名：鎖定期 → currentPerfume；開放期 → nextPerfume（沿用本期則 fallback）
+            const reservedName = isLocked
+                ? currentPerfume
+                : (hasNextSelection ? nextPerfume : currentPerfume);
+            setText('reservedPerfumeName', reservedName || '—');
+
+            // 三段文案
+            if (isLocked) {
+                setText('scentDeadlineNote', `本期出貨準備中，${formatMd(t7Date)} 前送達`);
+                setText('shipDateNote',      `下期選香將於 ${formatMd(t8Date)} 開放，現在無法修改。`);
+                setText('nextScentChannelNote', `下次扣款 ${formatMd(nextChargeDate)}。`);
+            } else if (isFirstPeriod) {
+                setText('scentDeadlineNote', '首期選香｜選擇後直接套用本期');
+                setText('shipDateNote',      '本期出貨後將開始下期週期');
+                setText('nextScentChannelNote', `下次扣款日：${formatMd(nextChargeDate)}`);
+            } else {
+                const hint = hasNextSelection
+                    ? `下期已選：${nextPerfume}`
+                    : `不選將沿用本期：${currentPerfume}`;
+                setText('scentDeadlineNote', `下期選香截止日：${formatMd(nextChargeDate)}（扣款後鎖定）`);
+                setText('shipDateNote',      hint);
+                setText('nextScentChannelNote', '');
             }
-            const m2 = nextOrderDate.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
-            if (m2) return new Date(parseInt(m2[1]), parseInt(m2[2]) - 1, parseInt(m2[3]));
-            return null;
-        }
 
-        // 找「>= startDate 的第一個週三」
-        function firstWednesdayOnOrAfter(startDate) {
-            if (!startDate) return null;
-            const d = new Date(startDate);
-            const daysUntilWed = (3 - d.getDay() + 7) % 7; // 週三=3
-            d.setDate(d.getDate() + daysUntilWed);
-            return d;
-        }
+            // carousel 高亮對象
+            const highlightName = isFirstPeriod
+                ? currentPerfume
+                : (isLocked ? currentPerfume : (hasNextSelection ? nextPerfume : currentPerfume));
+            if (highlightName && highlightName !== '尚未選香') {
+                updateScentSelection(highlightName);
+            }
 
-        function applyLockState(locked, nextOrderDate, orderCreatedAt) {
-            isLocked = locked;
-            const lockNotice = document.getElementById('scentLockNotice');
-            const lockNoticeText = document.getElementById('scentLockNoticeText');
+            // 鎖定 → disable 按鈕 + 顯示 lock notice
             const buttons = document.querySelectorAll('.scent-card-btn');
-            const nextScentChannelNote = document.getElementById('nextScentChannelNote');
-            const shipDateNote = document.getElementById('shipDateNote');
-
-            // 當期出貨日：從 order_created_at 算起的第一個週三
-            const orderDate = orderCreatedAt ? new Date(orderCreatedAt) : null;
-            const wed = orderDate ? firstWednesdayOnOrAfter(orderDate) : null;
-
-            if (wed) {
-                const wm = wed.getMonth() + 1;
-                const wd = wed.getDate();
-                if (shipDateNote) {
-                    shipDateNote.textContent = `您的香氛包裹預計於 ${wm} 月 ${wd} 日（週三）寄出。`;
-                }
-            }
-
-            // 下次選香開放 = 下次續訂日後第一個週三的隔天（週四）
-            const nextSubDate = parseSubscriptionDate(nextOrderDate);
-            const nextWed = nextSubDate ? firstWednesdayOnOrAfter(nextSubDate) : null;
-            if (nextWed && nextScentChannelNote) {
-                const thu = new Date(nextWed);
-                thu.setDate(thu.getDate() + 1);
-                nextScentChannelNote.textContent = `下月選香通道，將於 ${thu.getMonth()+1} 月 ${thu.getDate()} 日開啟。`;
-            }
-
-            if (locked) {
-                buttons.forEach(btn => { btn.disabled = true; });
-                if (lockNotice && lockNoticeText) {
-                    const openDate = nextWed ? (() => { const t = new Date(nextWed); t.setDate(t.getDate() + 1); return `${t.getMonth()+1} 月 ${t.getDate()} 日`; })() : nextOrderDate;
-                    lockNoticeText.textContent = `系統出貨準備中，已過選香截止日。下期選香將於 ${openDate} 開放。`;
-                    lockNotice.classList.remove('hidden');
-                }
+            buttons.forEach(btn => { btn.disabled = isLocked; });
+            const lockNotice = document.getElementById('scentLockNotice');
+            if (isLocked) {
+                setText('scentLockNoticeText', `系統出貨準備中，下期選香將於 ${formatMd(t8Date)} 開放。`);
+                if (lockNotice) lockNotice.classList.remove('hidden');
             } else {
                 if (lockNotice) lockNotice.classList.add('hidden');
             }
@@ -760,10 +749,11 @@
                     e.preventDefault();
                     e.stopPropagation();
 
-                    if (isLocked) {
+                    if (isLockedGlobal) {
+                        const openDate = t8DateCached ? formatMd(t8DateCached) : '下期';
                         Swal.fire({
-                            title: '選香已截止',
-                            text: '本期選香截止日已過，下期開放時即可重新選擇。',
+                            title: '選香暫停中',
+                            text: `本期出貨準備中，下期選香將於 ${openDate} 開放。`,
                             icon: 'info',
                             confirmButtonText: '了解',
                             confirmButtonColor: '#be9f74',
@@ -790,14 +780,12 @@
                             body: JSON.stringify({
                                 action: 'select_perfume',
                                 lineUid: profile.userId,
-                                scentName: perfumeName,
-                                displayName: profile.displayName
+                                scentName: perfumeName
                             })
                         });
                         const result = await response.json();
 
                         if (response.ok) {
-                            // 成功：更新 UI
                             buttons.forEach(b => {
                                 b.classList.remove('selected');
                                 b.textContent = '一鍵切換';
@@ -808,11 +796,12 @@
                             btn.textContent = '已選定';
 
                             const reservedEl = document.getElementById('reservedPerfumeName');
-                            if (reservedEl) reservedEl.textContent = card.querySelector('.scent-card-name').childNodes[0].textContent.trim();
+                            if (reservedEl) reservedEl.textContent = perfumeName;
 
+                            const title = result.appliedTo === 'current' ? '本期已套用' : '下期已選定';
                             Swal.fire({
-                                title: '成功！',
-                                text: result.message,
+                                title,
+                                text: perfumeName,
                                 icon: 'success',
                                 confirmButtonColor: '#be9f74'
                             });
