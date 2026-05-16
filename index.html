@@ -472,6 +472,22 @@
             return `${parseInt(parts[1])} 月 ${parseInt(parts[2])} 日`;
         }
 
+        // 今日 ISO（YYYY-MM-DD，本地時區）
+        function todayIso() {
+            const d = new Date();
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
+        // 今日是否落在 [chargeDate, t7Date] 出貨準備窗口內（ISO YYYY-MM-DD 可直接字串比較）
+        function isInShipWindow(chargeDate, t7Date) {
+            if (!chargeDate || !t7Date) return false;
+            const today = todayIso();
+            return today >= chargeDate && today <= t7Date;
+        }
+
         async function initLiff() {
             try {
                 await liff.init({ liffId: "2009177086-5AGq54Qb" });
@@ -520,6 +536,7 @@
                         nextPerfume:     result.nextPerfume,
                         currentPeriodNo: result.currentPeriodNo,
                         isLocked:        result.isLocked === true,
+                        chargeDate:      result.chargeDate,
                         t7Date:          result.t7Date,
                         t8Date:          result.t8Date,
                         nextChargeDate:  result.nextChargeDate,
@@ -614,7 +631,7 @@
             if (reservedEl && perfumeName) reservedEl.textContent = perfumeName;
         }
 
-        function renderScentBlock({ currentPerfume, nextPerfume, currentPeriodNo, isLocked, t7Date, t8Date, nextChargeDate }) {
+        function renderScentBlock({ currentPerfume, nextPerfume, currentPeriodNo, isLocked, chargeDate, t7Date, t8Date, nextChargeDate }) {
             isLockedGlobal = isLocked;
             t8DateCached = t8Date || '';
             const isFirstPeriod = currentPeriodNo === 1;
@@ -626,21 +643,27 @@
                 : (hasNextSelection ? nextPerfume : currentPerfume);
             setText('reservedPerfumeName', reservedName || '—');
 
+            // 寄出時間：僅在 chargeDate~t7Date 出貨準備窗口內顯示整列
+            const shipRow = document.getElementById('shipDateNote')?.parentElement;
+            if (isInShipWindow(chargeDate, t7Date)) {
+                setText('shipDateNote', `您的香氛包裹預計於 ${formatMd(t7Date)} 寄出`);
+                if (shipRow) shipRow.classList.remove('hidden');
+            } else {
+                if (shipRow) shipRow.classList.add('hidden');
+            }
+
             // 三段文案
             const nextChannelRow = document.getElementById('nextScentChannelNote')?.parentElement;
             if (isLocked) {
                 setText('scentDeadlineNote', '本期選香已截止，包裹準備中');
-                setText('shipDateNote',      `您的香氛包裹預計於 ${formatMd(t7Date)} 寄出`);
                 setText('nextScentChannelNote', `下期選香將於 ${formatMd(t8Date)} 開放`);
                 if (nextChannelRow) nextChannelRow.classList.remove('hidden');
             } else if (isFirstPeriod) {
                 setText('scentDeadlineNote', '首期選香已選定');
-                setText('shipDateNote',      `您的香氛包裹預計於 ${formatMd(t7Date)} 寄出`);
                 setText('nextScentChannelNote', `下期選香將於 ${formatMd(t8Date)} 開放`);
                 if (nextChannelRow) nextChannelRow.classList.remove('hidden');
             } else {
                 setText('scentDeadlineNote', `在 ${formatMd(nextChargeDate)} 前，您皆可自由探索並隨時替換`);
-                setText('shipDateNote',      `您的香氛包裹預計於 ${formatMd(t7Date)} 寄出`);
                 if (nextChannelRow) nextChannelRow.classList.add('hidden');
             }
 
