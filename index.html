@@ -627,21 +627,21 @@
             setText('reservedPerfumeName', reservedName || '—');
 
             // 三段文案
+            const nextChannelRow = document.getElementById('nextScentChannelNote')?.parentElement;
             if (isLocked) {
-                setText('scentDeadlineNote', `本期出貨準備中，${formatMd(t7Date)} 前送達`);
-                setText('shipDateNote',      `下期選香將於 ${formatMd(t8Date)} 開放，現在無法修改。`);
-                setText('nextScentChannelNote', `下次扣款 ${formatMd(nextChargeDate)}。`);
+                setText('scentDeadlineNote', '本期選香已截止，包裹準備中');
+                setText('shipDateNote',      `您的香氛包裹預計於 ${formatMd(t7Date)} 寄出`);
+                setText('nextScentChannelNote', `下期選香將於 ${formatMd(t8Date)} 開放`);
+                if (nextChannelRow) nextChannelRow.classList.remove('hidden');
             } else if (isFirstPeriod) {
-                setText('scentDeadlineNote', '首期選香｜選擇後直接套用本期');
-                setText('shipDateNote',      '本期出貨後將開始下期週期');
-                setText('nextScentChannelNote', `下次扣款日：${formatMd(nextChargeDate)}`);
+                setText('scentDeadlineNote', '首期選香已選定');
+                setText('shipDateNote',      `您的香氛包裹預計於 ${formatMd(t7Date)} 寄出`);
+                setText('nextScentChannelNote', `下期選香將於 ${formatMd(t8Date)} 開放`);
+                if (nextChannelRow) nextChannelRow.classList.remove('hidden');
             } else {
-                const hint = hasNextSelection
-                    ? `下期已選：${nextPerfume}`
-                    : `不選將沿用本期：${currentPerfume}`;
-                setText('scentDeadlineNote', `下期選香截止日：${formatMd(nextChargeDate)}（扣款後鎖定）`);
-                setText('shipDateNote',      hint);
-                setText('nextScentChannelNote', '');
+                setText('scentDeadlineNote', `在 ${formatMd(nextChargeDate)} 前，您皆可自由探索並隨時替換`);
+                setText('shipDateNote',      `您的香氛包裹預計於 ${formatMd(t7Date)} 寄出`);
+                if (nextChannelRow) nextChannelRow.classList.add('hidden');
             }
 
             // carousel 高亮對象
