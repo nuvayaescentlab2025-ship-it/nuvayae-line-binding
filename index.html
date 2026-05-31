@@ -503,7 +503,9 @@
 
                 if (result.isBound) {
                     const planName = result.subType === 'year' ? '尊榮年訂閱' : '標準月訂閱';
-                    document.getElementById('subscriptionDuration').innerText = `${planName} | 已訂閱 ${result.duration}`;
+                    const daysMatch = result.duration && result.duration.match(/(\d+)\s*天/);
+                    const daysText = daysMatch ? `${daysMatch[1]} 天` : result.duration;
+                    document.getElementById('subscriptionDuration').innerText = `${planName} | 已訂閱 ${daysText}`;
                     const months = result.months;
                     const total = 12;
                     const remaining = total - months;
