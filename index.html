@@ -243,6 +243,9 @@
         background: rgba(201,169,110,0.22);
         box-shadow: 0 0 8px rgba(201,169,110,0.2);
       }
+      .scent-card-btn.locked {
+        opacity: 0.45; cursor: not-allowed;
+      }
 
       .scent-nav {
         background: none; border: 1px solid rgba(190,159,116,0.25);
@@ -664,9 +667,9 @@
                 updateScentSelection(highlightName);
             }
 
-            // 鎖定 → disable 按鈕（點擊時由 SweetAlert 提示）
+            // 鎖定 → 標記 class（disabled 會吃掉 click，改用 class 讓 SweetAlert 能觸發）
             const buttons = document.querySelectorAll('.scent-card-btn');
-            buttons.forEach(btn => { btn.disabled = isLocked; });
+            buttons.forEach(btn => { btn.classList.toggle('locked', isLocked); });
         }
 
         function renderCalendar(months) {
